@@ -24,5 +24,18 @@ p(M_{i} \vert X) = \frac{p(X, M_{i})}{P(X)} = \frac{p(X \vert M_{i})p(M_{i})}{\s
 $$
 
 - Maximum Likelihood (ML) and Posterior Predictive
-  - ML: Estimate $$ from trainning data 
+  - ML: Estimate $\theta_{i}$ from training data 
+  - 
+
+
+
+## Lecture 02 - Fundamentals of the Probabilistic Approach
+
+> Bishop 1-2, in particular 2.3 and 2.4.
+
+
+
+## Lecture 03 - Linear Regression & Model Selection
+
+> Bishop 3, in particular 3.1, 3.3 and 3.4.
 
