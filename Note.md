@@ -3,7 +3,7 @@
 ## Lecture 01 - Intro
 
 - Linear algebra
-  - What does the covariance matrix mean.
+  - What does the covariance matrix mean?
 - Product rule:
 
 $$
@@ -32,6 +32,8 @@ $$
 ## Lecture 02 - Fundamentals of the Probabilistic Approach
 
 > Bishop 1-2, in particular 2.3 and 2.4.
+
+
 
 
 
