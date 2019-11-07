@@ -25,13 +25,60 @@ $$
 
 - Maximum Likelihood (ML) and Posterior Predictive
   - ML: Estimate $\theta_{i}$ from training data 
-  - 
+  - ...
 
 
 
 ## Lecture 02 - Fundamentals of the Probabilistic Approach
 
 > Bishop 1-2, in particular 2.3 and 2.4.
+
+### Probabilistic Approach
+
+| Bayesian                                                     | Frequentist                                                  |
+| ------------------------------------------------------------ | ------------------------------------------------------------ |
+| Probability is a measure of belief.                          | The ratio of outcomes in repeated trials.                    |
+| The data is fixed, models have probabilities.                | There is a true model and the data is a random realization.  |
+| There does not have to be an experiment for declaring probability. | Parameters can only be deduced from data (likely outcome of experiment). |
+| Can incorporate prior knowledge, probabilities can be updated. | Each repeated experiment starts from ignorance.              |
+| Estimators are good for available data.                      | Estimators are averaged across many trials.                  |
+| Probability of a hypothesis given the data (posterior distribution). | Probability of the data given hypothesis (likelihood, sampling dist.). |
+| All variables/parameters have distribution.                  | Parameters are fixed unknowns that can be point estimated from repeated trials. |
+
+#### Learning and inference
+
+- Learning distributions
+- Expectation:
+
+$$
+\mathrm{E}[x] = \int xp (x) dx
+$$
+
+- Maximum Likelihood Estimation (MLE): *log-likelihood* is often used to convert a $\prod$ to a $\sum$.
+
+$$
+p(\mathbf{t}\vert \mathbf{x}, \mathbf{w}, \beta) = \prod_{i}^{N} \mathcal{N}(t_{n} \vert y(x_{n}, \mathbf{w}), \beta^{-1})
+$$
+
+- Maximize a Posterior (MAP):
+
+  Maximization of $\ln p(\mathbf{w}\vert \mathbf{x}, \mathbf{t}, \beta)$ would requires:
+$$
+\mathbf{w}_{\mathrm{MAP}} = \arg\min_{\mathbf{w}}\{\frac{\beta}{2}\sum_{n=1}^{N}(y(x_{n}, \mathbf{w})-t_{n})^{2} + \frac{\alpha}{2}\mathbf{w}^{T}\mathbf{w}\}
+$$
+
+#### Model complexity
+
+
+
+#### The Gaussian distribution
+
+$$
+\mathcal{N}(\mathbf{x} \vert \mathbf{\mu}, \mathbf{\sigma}) = \frac{1}{(2\pi)^{\mathcal{D}/2}}\frac{1}{|\sigma|^{1/2}}\exp\left[ -\frac{1}{2}(\mathbf{x}-\mathbf{\mu})^{T}\sigma^{-1}(\mathbf{x}-\mathbf{\mu}) \right]
+$$
+
+
+
 
 
 
@@ -41,3 +88,17 @@ $$
 
 > Bishop 3, in particular 3.1, 3.3 and 3.4.
 
+Probabilistic Linear Regression: $y(x, \mathbf{w}) = w_{0} + w_{1} x$, where $\mathbf{w} \sim \mathcal{N}(\mathbf{\mu}, \sigma)$.
+
+Likelihood: prob of data given model parameters.
+
+Prior: prob of model.
+
+Posterior: prob of model parameters given data.
+
+
+
+$$
+p(\mathbf{w} | \mathcal{D}, \mathcal{M}_{i}) = \frac{p(\mathcal{D}|\mathbf{w}, \mathcal{M}_{i}) p(\mathbf{w}|\mathcal{M}_{i})}{p(\mathcal{D}|\mathcal{M}_{i})}
+$$
+Marginal likelihood:
