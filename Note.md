@@ -102,11 +102,11 @@ Marginal likelihood:
 $$
 p(\mathcal{D}|\mathcal{M}_{i}) = \int p(\mathcal{D}|\mathbf{w}, \mathcal{M}_{i}) p(\mathbf{w}|\mathcal{M}_{i}) d\mathbf{w}
 $$
-Then, the model evidence posterior:
+Then, the posterior model evidence would be:
 $$
 p(\mathcal{M}_{i}|\mathcal{D}) \propto p(\mathcal{D}|\mathcal{M}_{i}) p(\mathcal{M}_{i})
 $$
-Based on the model evidence, we have model mixture of $K$ models:
+Based on the model evidence, we have model mixture of $K$ models (or simply comparison between models):
 $$
 p(t|\mathcal{x}, \mathcal{D}) = \sum_{i=1}^{K} p(t|\mathbf{x}, \mathcal{M}_{i}, \mathcal{D}) p(\mathcal{M}_{i}|\mathcal{D})
 $$
@@ -118,4 +118,20 @@ $$
 
 > Bishop 6.1, 6.2, 6.4.
 
+### Dual linear regression
 
+$$
+p(\mathbf{w}|\mathbf{t}, \mathbf{X}) \propto p(\mathbf{t}|\mathbf{w}, \mathbf{X}) p(\mathbf{w}|\mathbf{X})
+$$
+
+
+
+
+
+### Dual representations
+
+
+
+### Kernel functions
+
+akfhakfhaf
