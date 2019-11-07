@@ -47,7 +47,6 @@ $$
 
 #### Learning and inference
 
-- Learning distributions
 - Expectation:
 
 $$
@@ -67,8 +66,6 @@ $$
 \mathbf{w}_{\mathrm{MAP}} = \arg\min_{\mathbf{w}}\{\frac{\beta}{2}\sum_{n=1}^{N}(y(x_{n}, \mathbf{w})-t_{n})^{2} + \frac{\alpha}{2}\mathbf{w}^{T}\mathbf{w}\}
 $$
 
-#### Model complexity
-
 
 
 #### The Gaussian distribution
@@ -82,19 +79,19 @@ $$
 
 
 
-
-
 ## Lecture 03 - Linear Regression & Model Selection
 
 > Bishop 3, in particular 3.1, 3.3 and 3.4.
 
 Probabilistic Linear Regression: $y(x, \mathbf{w}) = w_{0} + w_{1} x$, where $\mathbf{w} \sim \mathcal{N}(\mathbf{\mu}, \sigma)$.
 
-Likelihood: prob of data given model parameters.
 
-Prior: prob of model.
 
-Posterior: prob of model parameters given data.
+- Likelihood: probability of **data** given model parameters.
+
+- Prior: probability of **model**.
+
+- Posterior: probability of **model** parameters given data.
 
 
 
@@ -102,3 +99,23 @@ $$
 p(\mathbf{w} | \mathcal{D}, \mathcal{M}_{i}) = \frac{p(\mathcal{D}|\mathbf{w}, \mathcal{M}_{i}) p(\mathbf{w}|\mathcal{M}_{i})}{p(\mathcal{D}|\mathcal{M}_{i})}
 $$
 Marginal likelihood:
+$$
+p(\mathcal{D}|\mathcal{M}_{i}) = \int p(\mathcal{D}|\mathbf{w}, \mathcal{M}_{i}) p(\mathbf{w}|\mathcal{M}_{i}) d\mathbf{w}
+$$
+Then, the model evidence posterior:
+$$
+p(\mathcal{M}_{i}|\mathcal{D}) \propto p(\mathcal{D}|\mathcal{M}_{i}) p(\mathcal{M}_{i})
+$$
+Based on the model evidence, we have model mixture of $K$ models:
+$$
+p(t|\mathcal{x}, \mathcal{D}) = \sum_{i=1}^{K} p(t|\mathbf{x}, \mathcal{M}_{i}, \mathcal{D}) p(\mathcal{M}_{i}|\mathcal{D})
+$$
+
+
+
+
+## Lecture 04 & 05 - Kernels & Introduction to Gaussian Processes
+
+> Bishop 6.1, 6.2, 6.4.
+
+
