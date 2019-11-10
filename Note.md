@@ -126,8 +126,6 @@ $$
 
 
 
-
-
 ### Dual representations
 
 
