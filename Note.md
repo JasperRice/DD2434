@@ -71,7 +71,7 @@ $$
 #### The Gaussian distribution
 
 $$
-\mathcal{N}(\mathbf{x} \vert \mathbf{\mu}, \mathbf{\sigma}) = \frac{1}{(2\pi)^{\mathcal{D}/2}}\frac{1}{|\sigma|^{1/2}}\exp\left[ -\frac{1}{2}(\mathbf{x}-\mathbf{\mu})^{T}\sigma^{-1}(\mathbf{x}-\mathbf{\mu}) \right]
+\mathcal{N}(\mathbf{x} \vert \mathbf{\mu}, \mathbf{\sigma}) = \frac{1}{(2\pi)^{\mathcal{D}/2}}\frac{1}{|\Sigma|^{1/2}}\exp\left[ -\frac{1}{2}(\mathbf{x}-\mathbf{\mu})^{T}\Sigma^{-1}(\mathbf{x}-\mathbf{\mu}) \right]
 $$
 
 
@@ -126,10 +126,59 @@ $$
 
 
 
+
+
 ### Dual representations
 
 
 
 ### Kernel functions
 
-akfhakfhaf
+When map $\mathbf{t}$ to $\mathbf{t}^{*}$, inverse of matrix would be conducted, which is computational consuming.
+
+
+
+### Gaussian Processes
+
+Joint distribution for the model:
+
+
+
+The prior definition:
+$$
+p(\mathbf{f} \vert \mathbf{X}, \theta) = \mathcal{GP}(\mu(\mathbf{x}), k(\mathbf{x}, \mathbf{x}')) \\
+\mu(\mathbf{x}) = 0 \\
+k(\mathbf{x}, \mathbf{x}') = \sigma^{2}\exp(-\frac{}{l^{2}}(\mathbf{f}(\mathbf{x})-m(x))^{T}(\mathbf{f}(\mathbf{x})-m(\mathbf{x})))
+$$
+
+
+
+## Lecture 06 - Representation Learning
+
+> Bishop 12, in particular 12.1, 12.2, 12.3 and 12.4.1.
+
+
+
+## Lecture 07 & 08 - Directional Graphic Model 
+
+> Bishop 8, 8.1-8.4.3. (13.1, 13.2.1, 13.2.2, 13.2.5, 13.2.6)
+
+### Factorization
+
+$$
+p(x_{1}, \cdots, x_{N}) = \prod_{i=1}^{N}p(x_{i} \vert \mathbf{x} \setminus x_{i}) \\
+= p(x_{1})p(x_{2} \vert x_{1})p(x_{3} \vert x_{1}, x_{2}) \cdots p(x_{V} \vert x_{[V]})
+$$
+
+#### Conditional Independence
+
+X and Y are conditionally independent given Z if and only if
+$$
+p(X, Y \vert Z) = p(X \vert Z) p(Y \vert Z),
+$$
+Implies
+$$
+p(X \vert Y, Z) = p(X, Y \vert Z) / p(Y \vert Z) = p(X \vert Z).
+$$
+
+
