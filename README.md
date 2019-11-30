@@ -1,7 +1,6 @@
-# DD2434 - Machine Learning, Advanced Course
+# Assignment 1
+## 1. The Prior $p(\mathbf{X})$, $p(\mathbf{W})$, $p(f)$ 
+### 1.2 Practical
+#### 1.2.1 Linear Regression
 
-- [ ] [Homework 1](https://www.overleaf.com/project/5dbabe2681be890001a78323)
-- [ ] [Homework 2]()
-
-- [ ] [Project]()
-
+#### 1.2.2 Non-parametric Regression
