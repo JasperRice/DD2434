@@ -34,6 +34,12 @@ def generate_data_point():
     t = linear_function(W, x, epsilon)
     return x, t
 
+def update_posterior(mu_1, Sigma_1, mu_2, Sigma_2):
+    Sigma_1_2_inverse = np.linalg.inv(Sigma_1 + Sigma_2)
+    Sigma_3 = np.dot(np.dot(Sigma_1, Sigma_1_2_inverse), Sigma_2)
+    mu_3 = np.dot(np.dot(Sigma_2, Sigma_1_2_inverse), mu_1) \
+        + np.dot(np.dot(Sigma_1, Sigma_1_2_inverse), mu_2)
+    return mu_3, Sigma_3
 
 def question_9(i):
     mu_prior = np.zeros(2)
