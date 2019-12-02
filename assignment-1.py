@@ -26,15 +26,24 @@ def plot_2d_gaussian(mu, Sigma, size=3.0, interval=0.01, filename="2d_guassian",
     else:
         plt.show()
 
-def plot_function(mu, Sigma):
-    W = np.random.multivariate_normal(mu, Sigma)
-    u"""
-    Working here.
-    """
+def plot_function(mu, Sigma, sample=10, filename="linear_function", save=True):
+    X_Set_Ones = np.ones_like(X_Set)
+    X_Set_Expanded = np.transpose(np.vstack([X_Set, X_Set_Ones]))
+    
     _, ax = plt.subplots()
+    for i in range(sample):
+        W = np.random.multivariate_normal(mu, Sigma)
+        T_Set = np.dot(X_Set_Expanded, W)
+        plt.plot(X_Set, T_Set)
+
+    plt.xlim(-1, 1)
+    plt.ylim(-1, 1)
     ax.axis('equal')
-    plt.xlim(-5, 5)
-    plt.ylim(-5, 5)
+
+    if save:
+        tikz.save(filename+".tex")
+    else:
+        plt.show()
 
 def linear_function(W_Model, x, epsilon):
     return np.dot(x, W_Model) + epsilon
@@ -69,6 +78,7 @@ def question_9(i):
             mu_posterior, Sigma_posterior = get_posterior(X, T, Sigma_prior_inverse)
             plot_2d_gaussian(mu_posterior, Sigma_posterior, filename="Q9-3-"+str(n+2), save=False)
 
+        plot_function(mu_posterior, Sigma_posterior, save=False)
 
 if __name__ == "__main__":
     question_9(3)
