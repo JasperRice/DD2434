@@ -12,8 +12,12 @@ np.random.seed(1000)
 
 W = np.array([[0.5], [-1.5]])
 X_Set = np.linspace(-1.0, 1.0, num=201)
-epsilon_sigma_list = [0.2]
-epsilon_sigma_list = [0.1, 0.2, 0.4, 0.8]
+# epsilon_sigma_list = [0.1, 0.2, 0.4, 0.8]
+
+X_Set = np.array([-4, -3, -2, -1, 0, 2, 3, 5])
+epsilon_sigma = 3
+l_list = [0.1, 1, 10, 100]
+
 
 def plot_2d_gaussian(mu, Sigma, size=3.0, interval=0.01, filename="2d_guassian", save=True):
     rv = mvn(mu, Sigma)
@@ -91,6 +95,19 @@ def question_9(i, epsilon_sigma, save):
         
         print(np.transpose(np.vstack([X[:,0], T[:,0]])))
 
+###########################################################################
+def plot_
+
+def nonlinear_function():
+    pass
+
+def kernel(X_1, X_2):
+    pass
+
+def question_10(save):
+    pass
+
 if __name__ == "__main__":
     for epsilon_sigma in epsilon_sigma_list:
-        question_9(4, epsilon_sigma, save=True)
+        # question_9(4, epsilon_sigma, save=True)
+        question_10(save=False)
