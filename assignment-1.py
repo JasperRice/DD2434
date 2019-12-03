@@ -3,9 +3,11 @@ import tikzplotlib as tikz
 import numpy as np
 import pylab as pb
 import random
-from math import pi
+from math import pi, sin
 from scipy.spatial.distance import cdist
 from scipy.stats import multivariate_normal as mvn
+from sklearn import gaussian_process
+from sklearn.gaussian_process.kernels import Matern
 
 random.seed(1000)
 np.random.seed(1000)
@@ -52,7 +54,7 @@ def plot_function(mu, Sigma, X, T, sample=10, filename="linear_function", save=T
     else:
         plt.show()
 
-def linear_function(W_Model, x, epsilon):
+def linear_function(W_Model, x, epsilon=0.0):
     return np.dot(x, W_Model) + epsilon
 
 def generate_data_point(epsilon_sigma):
@@ -96,13 +98,25 @@ def question_9(i, epsilon_sigma, save):
         print(np.transpose(np.vstack([X[:,0], T[:,0]])))
 
 ###########################################################################
-def plot_
+def plot_GP_prior(sigma_f, l, filename="GP_prior", save=True):
+    num = 2000
+    X = np.linspace(-6.0, 6.0, num=num)
+    X = np.atleast_2d(X)
+    K = np.exp(-cdist(X, X) / l**2)
+    mu = np.zeros(num)
 
-def nonlinear_function():
-    pass
+def nonlinear_function(x, epsilon=0.0):
+    return (2 + (0.5 * x -1)**2) * sin(3 * x) + epsilon
 
-def kernel(X_1, X_2):
-    pass
+def kernel(X1, X2, sigma_f=1.0, l=1.0):
+    """
+    Squared exponential kernel. Computes a covariance matrix.
+    Args:
+        X1: Array of m points (m x d)
+        X2: Array of n points (n x d)
+    Returns:
+        Covariance matrix (m x n)
+    """
 
 def question_10(save):
     pass
