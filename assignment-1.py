@@ -102,14 +102,15 @@ def question_9(i, epsilon_sigma, save):
 
 ###########################################################################
 def plot_GP_prior(sigma_f=1.0, l=1.0, filename="GP_prior", save=True):
-    num = 2000
-    X = np.linspace(-6.0, 6.0, num=num).reshape(-1, 1)
+    num = 200
+    X = np.linspace(-10.0, 10.0, num=num).reshape(-1, 1)
     mu = np.zeros(X.shape)
     K = kernel(X, X, sigma_f=sigma_f, l=l)
     samples = np.random.multivariate_normal(mu.ravel(), K, 10)
     plot_gp(mu, K, X, samples=samples)
 
 def nonlinear_function(x, epsilon=0.0):
+    # T_train = (2*np.ones_like(X_train) + (0.5*X_train-np.ones_like(X_train))**2) * np.sin(3*X_train) + np.random.normal(0, 0.3, len(X_Set)).reshape(-1 ,1)
     return (2 + (0.5 * x -1)**2) * sin(3 * x) + epsilon
 
 def kernel(X1, X2, sigma_f=1.0, l=1.0):
@@ -153,12 +154,14 @@ def posterior_predictive(X_s, X_train, Y_train, l=1.0, sigma_f=1.0, sigma_y=1e-8
 
 def question_10(save):
     # plot_GP_prior(l=1)
-    X_s = np.array([1]).reshape(-1, 1)
+
+    num = 200
+    X_s = np.linspace(-10.0, 10.0, num=num).reshape(-1, 1)
     X_train = X_Set.reshape(-1, 1)
     T_train = (2*np.ones_like(X_train) + (0.5*X_train-np.ones_like(X_train))**2) * np.sin(3*X_train) + np.random.normal(0, 0.3, len(X_Set)).reshape(-1 ,1)
-    mu_s, cov_s = posterior_predictive(X_s, X_train, T_train, sigma_y=epsilon_sigma)
-    T_s = np.random.multivariate_normal(mu_s.reshape(-1), cov_s)
-    print(T_s[0])
+    mu_s, cov_s = posterior_predictive(X_s, X_train, T_train, sigma_f=1.0, l=1.0, sigma_y=1.0)
+    samples = np.random.multivariate_normal(mu_s.ravel(), cov_s, 3)
+    plot_gp(mu_s, cov_s, X_s, X_train=X_train, Y_train=T_train, samples=samples)
 
 if __name__ == "__main__":
     # for epsilon_sigma in epsilon_sigma_list:
