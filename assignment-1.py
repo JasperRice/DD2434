@@ -4,6 +4,7 @@ import numpy as np
 import pylab as pb
 import random
 from math import pi, sin
+from numpy.linalg import inv
 from scipy.spatial.distance import cdist
 from scipy.stats import multivariate_normal as mvn
 from sklearn import gaussian_process
@@ -19,7 +20,7 @@ X_Set = np.linspace(-1.0, 1.0, num=201)
 # epsilon_sigma_list = [0.1, 0.2, 0.4, 0.8]
 
 X_Set = np.array([-4, -3, -2, -1, 0, 2, 3, 5])
-epsilon_sigma = 3
+epsilon_sigma = 0.3
 l_list = [0.1, 1, 10, 100]
 
 
@@ -67,7 +68,7 @@ def generate_data_point(epsilon_sigma):
 
 def get_posterior(X, T, Sigma_prior_inverse, epsilon_sigma):
     Sigma_posterior_inverse = np.dot(np.transpose(X), X) / (epsilon_sigma**2) + Sigma_prior_inverse
-    Sigma_posterior = np.linalg.inv(Sigma_posterior_inverse)
+    Sigma_posterior = inv(Sigma_posterior_inverse)
     mu_posterior = np.dot(np.dot(Sigma_posterior, np.transpose(X)), T) / (epsilon_sigma**2)
     mu_posterior = np.transpose(mu_posterior)[0,:]
     return mu_posterior, Sigma_posterior
@@ -75,7 +76,7 @@ def get_posterior(X, T, Sigma_prior_inverse, epsilon_sigma):
 def question_9(i, epsilon_sigma, save):
     mu_prior = np.zeros(2)
     Sigma_prior = np.eye(2)
-    Sigma_prior_inverse = np.linalg.inv(Sigma_prior)
+    Sigma_prior_inverse = inv(Sigma_prior)
     if i is 1:
         plot_2d_gaussian(mu_prior, Sigma_prior,
                         filename="Q9-1", save=save)
@@ -123,8 +124,41 @@ def kernel(X1, X2, sigma_f=1.0, l=1.0):
     sqdist = np.sum(X1**2, 1).reshape(-1, 1) + np.sum(X2**2, 1) - 2 * np.dot(X1, X2.T)
     return sigma_f**2 * np.exp(-0.5 / l**2 * sqdist)
 
+def posterior_predictive(X_s, X_train, Y_train, l=1.0, sigma_f=1.0, sigma_y=1e-8):
+    '''
+    From krasserm
+    Computes the suffifient statistics of the GP posterior predictive distribution 
+    from m training data X_train and Y_train and n new inputs X_s.
+
+    Args:
+        X_s: New input locations (n x d).
+        X_train: Training locations (m x d).
+        Y_train: Training targets (m x 1).
+        l: Kernel length parameter.
+        sigma_f: Kernel vertical variation parameter.
+        sigma_y: Noise parameter.
+
+    Returns:
+        Posterior mean vector (n x d) and covariance matrix (n x n).
+    '''
+    K = kernel(X_train, X_train, l, sigma_f) + sigma_y**2 * np.eye(len(X_train))
+    K_s = kernel(X_train, X_s, l, sigma_f)
+    K_ss = kernel(X_s, X_s, l, sigma_f) + sigma_y**2 * np.eye(len(X_s))
+    K_inv = inv(K)
+    # Equation (4)
+    mu_s = K_s.T.dot(K_inv).dot(Y_train)
+    # Equation (5)
+    cov_s = K_ss - K_s.T.dot(K_inv).dot(K_s)
+    return mu_s, cov_s
+
 def question_10(save):
-    plot_GP_prior(l=100)
+    # plot_GP_prior(l=1)
+    X_s = np.array([1]).reshape(-1, 1)
+    X_train = X_Set.reshape(-1, 1)
+    T_train = (2*np.ones_like(X_train) + (0.5*X_train-np.ones_like(X_train))**2) * np.sin(3*X_train) + np.random.normal(0, 0.3, len(X_Set)).reshape(-1 ,1)
+    mu_s, cov_s = posterior_predictive(X_s, X_train, T_train, sigma_y=epsilon_sigma)
+    T_s = np.random.multivariate_normal(mu_s.reshape(-1), cov_s)
+    print(T_s[0])
 
 if __name__ == "__main__":
     # for epsilon_sigma in epsilon_sigma_list:
