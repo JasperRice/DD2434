@@ -87,8 +87,6 @@ def em_algorithm(seed_val, samples, num_clusters, max_num_iter=100):
     Function template: def em_algorithm(seed_val, samples, k, max_num_iter=10):
     You can change it to: def em_algorithm(seed_val, samples, k, max_num_iter=10, new_param_1=[], new_param_2=123):
     """
-
-
     # Set the seed
     np.random.seed(seed_val)
 
@@ -101,7 +99,6 @@ def em_algorithm(seed_val, samples, num_clusters, max_num_iter=100):
     # Get num_samples and num_nodes from samples
     num_samples = np.size(samples, 0)
     num_nodes = np.size(samples, 1)
-    pxn = 1 / (2**num_nodes) # p(x[n])
 
     # Initialize trees
     from Tree import TreeMixture
@@ -110,37 +107,58 @@ def em_algorithm(seed_val, samples, num_clusters, max_num_iter=100):
     tm.simulate_trees(seed_val=seed_val)
     tm.sample_mixtures(num_samples=num_samples, seed_val=seed_val)
 
+    loglikelihood = []
+    topology_list = []
+    theta_list = []
+    for iter in range(max_num_iter):
+        print("===================="+str(iter)+"====================")
+        # Step 1: Compute the responsibilities
+        print("Computing responsibilities...")
+        r = np.ones((num_samples, num_clusters))
+        for n, x in enumerate(samples): # Compute the 
+            for k, t in enumerate(tm.clusters):
+                r[n,k] *= tm.pi[k]
+                visit_list = [t.root]
+                while len(visit_list) != 0:
+                    cur_node = visit_list[0]
+                    visit_list = visit_list[1:]
+                    visit_list = visit_list + cur_node.descendants
+                    if cur_node.ancestor is None:
+                        r[n,k] *= cur_node.cat[x[int(cur_node.name)]]
+                    else:
+                        r[n,k] *= cur_node.cat[x[int(cur_node.ancestor.name)]][x[int(cur_node.name)]]
+        marginal = np.reshape(np.sum(r, axis=1), (num_samples,1))
+        marginal = np.repeat(marginal, num_clusters, axis=1)
+        r /= marginal
+
+        # Step 2: Update categorical distribution
+        print("Updating categorical distribution...")
+        tm.pi = np.mean(r, axis=0)
+
+        # Step 3:
+        pass
+
     # # Initialize categorical distribution
     # Pi = np.ones(num_clusters) / num_clusters
 
-    loglikelihood = []
-    for iter in range(max_num_iter):
-        pass
 
 
     # loglikelihood = np.array(loglikelihood)
-    print("Warning: maxima iterations reached without converging.")
-
-
-    # Start: Example Code Segment. Delete this segment completely before you implement the algorithm.
-
-    for iter_ in range(max_num_iter):
-        loglikelihood.append(np.log((1 + iter_) / max_num_iter))
-
-    topology_list = []
-    theta_list = []
-    for i in range(num_clusters):
-        topology_list.append(tm.clusters[i].get_topology_array())
-        theta_list.append(tm.clusters[i].get_theta_array())
+    print("Warning: maxima iterations reached without convergence.")
 
     loglikelihood = np.array(loglikelihood)
     topology_list = np.array(topology_list)
     theta_list = np.array(theta_list)
-    # End: Example Code Segment
-
-    ###
 
     return loglikelihood, topology_list, theta_list
+
+    # Start: Example Code Segment. Delete this segment completely before you implement the algorithm.
+    # for iter_ in range(max_num_iter):
+    #     loglikelihood.append(np.log((1 + iter_) / max_num_iter))
+    
+    # for i in range(num_clusters):
+    #     topology_list.append(tm.clusters[i].get_topology_array())
+    #     theta_list.append(tm.clusters[i].get_theta_array())
 
 
 def main():
