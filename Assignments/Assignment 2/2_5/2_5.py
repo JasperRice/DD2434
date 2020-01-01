@@ -87,6 +87,9 @@ def em_algorithm(seed_val, samples, num_clusters, max_num_iter=100):
     Function template: def em_algorithm(seed_val, samples, k, max_num_iter=10):
     You can change it to: def em_algorithm(seed_val, samples, k, max_num_iter=10, new_param_1=[], new_param_2=123):
     """
+    from Tree import TreeMixture
+    from sys.float_info import epsilon
+
     # Set the seed
     np.random.seed(seed_val)
 
@@ -101,7 +104,6 @@ def em_algorithm(seed_val, samples, num_clusters, max_num_iter=100):
     num_nodes = np.size(samples, 1)
 
     # Initialize trees
-    from Tree import TreeMixture
     tm = TreeMixture(num_clusters=num_clusters, num_nodes=num_nodes)
     tm.simulate_pi(seed_val=seed_val)
     tm.simulate_trees(seed_val=seed_val)
@@ -110,12 +112,13 @@ def em_algorithm(seed_val, samples, num_clusters, max_num_iter=100):
     loglikelihood = []
     topology_list = []
     theta_list = []
+    r_Old = np.zeros((num_samples, num_clusters))
     for iter in range(max_num_iter):
         print("===================="+str(iter)+"====================")
         # Step 1: Compute the responsibilities
         print("Computing responsibilities...")
         r = np.ones((num_samples, num_clusters))
-        for n, x in enumerate(samples): # Compute the 
+        for n, x in enumerate(samples):
             for k, t in enumerate(tm.clusters):
                 r[n,k] *= tm.pi[k]
                 visit_list = [t.root]
@@ -127,7 +130,11 @@ def em_algorithm(seed_val, samples, num_clusters, max_num_iter=100):
                         r[n,k] *= cur_node.cat[x[int(cur_node.name)]]
                     else:
                         r[n,k] *= cur_node.cat[x[int(cur_node.ancestor.name)]][x[int(cur_node.name)]]
+        
+        r += epsilon
         marginal = np.reshape(np.sum(r, axis=1), (num_samples,1))
+        loglikelihood.append(np.sum(np.log(marginal)))
+        
         marginal = np.repeat(marginal, num_clusters, axis=1)
         r /= marginal
 
@@ -135,15 +142,25 @@ def em_algorithm(seed_val, samples, num_clusters, max_num_iter=100):
         print("Updating categorical distribution...")
         tm.pi = np.mean(r, axis=0)
 
-        # Step 3:
+        # Step 3: Construct directed graphs
+        # np.sum(r)
+        q = epsilon * np.ones((num_nodes, num_nodes, 2, 2, num_clusters)) # (s, t, a, b, k)
+        for s in range(num_nodes):
+            for t in range(num_nodes):
+                for a in range(2):
+                    for b in range(2):
+                        pass
+
+
+
+
+        # Step 4: Construct maximum spanning trees
+
+        # Step 5: Update parameters
+        
         pass
 
-    # # Initialize categorical distribution
-    # Pi = np.ones(num_clusters) / num_clusters
 
-
-
-    # loglikelihood = np.array(loglikelihood)
     print("Warning: maxima iterations reached without convergence.")
 
     loglikelihood = np.array(loglikelihood)
