@@ -87,13 +87,13 @@ def em_algorithm(seed_val, samples, num_clusters, max_num_iter=100):
     Function template: def em_algorithm(seed_val, samples, k, max_num_iter=10):
     You can change it to: def em_algorithm(seed_val, samples, k, max_num_iter=10, new_param_1=[], new_param_2=123):
     """
-    from Tree import TreeMixture
-    from sys.float_info import epsilon
-
-    # Set the seed
+    from Tree import TreeMixture, Tree
+    from Kruskal_v1 import Graph
+    import sys
     np.random.seed(seed_val)
+    epsilon = sys.float_info.epsilon
+    # epsilon = sys.float_info.min
 
-    # TODO: Implement EM algorithm here.
     print("Running EM algorithm...")
 
     # Set threshold for convergence
@@ -107,16 +107,15 @@ def em_algorithm(seed_val, samples, num_clusters, max_num_iter=100):
     tm = TreeMixture(num_clusters=num_clusters, num_nodes=num_nodes)
     tm.simulate_pi(seed_val=seed_val)
     tm.simulate_trees(seed_val=seed_val)
-    tm.sample_mixtures(num_samples=num_samples, seed_val=seed_val)
+    # tm.sample_mixtures(num_samples=num_samples, seed_val=seed_val)
 
     loglikelihood = []
     topology_list = []
     theta_list = []
-    r_Old = np.zeros((num_samples, num_clusters))
     for iter in range(max_num_iter):
-        print("===================="+str(iter)+"====================")
+        print("==================== "+str(iter)+" ====================")
         # Step 1: Compute the responsibilities
-        print("Computing responsibilities...")
+        print("=> Computing responsibilities...")
         r = np.ones((num_samples, num_clusters))
         for n, x in enumerate(samples):
             for k, t in enumerate(tm.clusters):
@@ -130,64 +129,128 @@ def em_algorithm(seed_val, samples, num_clusters, max_num_iter=100):
                         r[n,k] *= cur_node.cat[x[int(cur_node.name)]]
                     else:
                         r[n,k] *= cur_node.cat[x[int(cur_node.ancestor.name)]][x[int(cur_node.name)]]
-        
         r += epsilon
+        
         marginal = np.reshape(np.sum(r, axis=1), (num_samples,1))
         loglikelihood.append(np.sum(np.log(marginal)))
+        # TODO: Judge whether converge:
         
         marginal = np.repeat(marginal, num_clusters, axis=1)
         r /= marginal
 
         # Step 2: Update categorical distribution
-        print("Updating categorical distribution...")
+        print("=> Updating categorical distribution...")
         tm.pi = np.mean(r, axis=0)
 
         # Step 3: Construct directed graphs
-        # np.sum(r)
-        q = epsilon * np.ones((num_nodes, num_nodes, 2, 2, num_clusters)) # (s, t, a, b, k)
+        print("=> Constructing directed graphs...")
+        denom = np.sum(r, axis=0)
+        q = np.zeros((num_nodes, num_nodes, 2, 2, num_clusters)) # (s, t, a, b, k)
         for s in range(num_nodes):
             for t in range(num_nodes):
                 for a in range(2):
                     for b in range(2):
-                        pass
-
-
-
-
-        # Step 4: Construct maximum spanning trees
-
-        # Step 5: Update parameters
+                        index = np.where((samples[:,(s,t)]==[a,b]).all(1))[0]
+                        numer = np.sum(r[index], axis=0)
+                        q[s, t, a, b] = numer / denom
+        q += epsilon
         
-        pass
+        q_s = np.zeros((num_nodes, 2, num_clusters))
+        for s in range(num_nodes):
+            for a in range(2):
+                index = np.where(samples[:, s]==a)
+                numer = np.sum(r[index], axis=0)
+                q_s[s,a] = numer / denom
+        q_s += epsilon
 
+        I = np.zeros((num_nodes, num_nodes, num_clusters)) # (s, t, k)
+        for s in range(num_nodes):
+            for t in range(num_nodes):
+                for a in range(2):
+                    for b in range(2):
+                        I[s,t] += q[s,t,a,b] * np.log(q[s,t,a,b] / q_s[s,a] / q_s[t,b])
+        # for k in range(num_clusters):
+        #     for s in range(num_nodes):
+        #         for t in range(num_nodes):
+        #             ifBreak = False
+        #             for a in range(2):
+        #                 for b in range(2):
+        #                     if q[s,t,a,b,k] is 0:
+        #                         I[s,t,k] = 0
+        #                         ifBreak = True
+        #                         break
+        #                     I[s,t,k] += q[s,t,a,b,k] * np.log(q[s,t,a,b,k] / q_s[s,a,k] / q_s[t,b,k])
+        #                 if ifBreak:
+        #                     break
 
-    print("Warning: maxima iterations reached without convergence.")
+        clusters = []
+        for k in range(num_clusters):
+            g = Graph(num_nodes)
+            for s in range(num_nodes):
+                for t in range(s+1, num_nodes):
+                    g.addEdge(s, t, I[s, t, k])
 
+            # Step 4: Construct maximum spanning trees
+            print("=> Constructing maximum spanning trees...")
+            edges = np.array(g.maximum_spanning_tree())[:,0:2]
+            topology_array = np.zeros(num_nodes)
+            topology_array[0] = np.nan
+            visit_list = [0]
+            while len(visit_list) != 0:
+                cur_node = visit_list[0]
+                index = np.where(edges==cur_node)
+                index = np.transpose(np.stack(index))
+                visit_list = visit_list[1:]
+                for id in index:
+                    child = edges[id[0], 1-id[1]]
+                    topology_array[int(child)] = cur_node
+                    visit_list.append(int(child))
+                if np.size(index) is not 0:
+                    edges = np.delete(edges, index[0], axis=0)
+
+            print(edges)
+            print(topology_array)
+            tree = Tree()
+            tree.load_tree_from_direct_arrays(topology_array)
+            tree.k = 2
+            tree.alpha = [1.0] * 2
+
+            # Step 5: Update CPDs
+            print("=> Updating CPDs...")
+            visit_list = [tree.root]
+            while len(visit_list) != 0:
+                cur_node = visit_list[0]
+                visit_list = visit_list[1:]
+                visit_list = visit_list + cur_node.descendants
+                if cur_node.ancestor is None:
+                    cur_node.cat = q_s[int(cur_node.name),:,k]
+                else:
+                    cur_node.cat = q[int(cur_node.ancestor.name),int(cur_node.name),:,:,k]
+
+            clusters.append(tree)
+        tm.clusters = clusters
+    # print("Warning: maxima iterations reached without convergence.")
+
+    for t in tm.clusters:
+        topology_list.append(t.get_topology_array())
+        theta_list.append(t.get_theta_array())
     loglikelihood = np.array(loglikelihood)
     topology_list = np.array(topology_list)
     theta_list = np.array(theta_list)
 
     return loglikelihood, topology_list, theta_list
 
-    # Start: Example Code Segment. Delete this segment completely before you implement the algorithm.
-    # for iter_ in range(max_num_iter):
-    #     loglikelihood.append(np.log((1 + iter_) / max_num_iter))
-    
-    # for i in range(num_clusters):
-    #     topology_list.append(tm.clusters[i].get_topology_array())
-    #     theta_list.append(tm.clusters[i].get_theta_array())
-
 
 def main():
     # Code to process command line arguments
     parser = argparse.ArgumentParser(description='EM algorithm for likelihood of a tree GM.')
-    parser.add_argument('sample_filename', type=str,
+    parser.add_argument('--sample_filename', type=str, default='data/q_2_5_tm_10node_20sample_4clusters.pkl_samples.txt',
                         help='Specify the name of the sample file (i.e data/example_samples.txt)')
-    parser.add_argument('output_filename', type=str,
+    parser.add_argument('--output_filename', type=str, default='result',
                         help='Specify the name of the output file (i.e data/example_results.txt)')
-    parser.add_argument('num_clusters', type=int, help='Specify the number of clusters (i.e 3)')
+    parser.add_argument('--num_clusters', type=int, default=4, help='Specify the number of clusters (i.e 3)')
     parser.add_argument('--seed_val', type=int, default=42, help='Specify the seed value for reproducibility (i.e 42)')
-    parser.add_argument('--real_values_filename', type=str, default="",
+    parser.add_argument('--real_values_filename', type=str, default='data/q_2_5_tm_10node_20sample_4clusters.pkl',
                         help='Specify the name of the real values file (i.e data/example_tree_mixture.pkl)')
     # You can add more default parameters if you want.
 

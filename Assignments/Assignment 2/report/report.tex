@@ -387,7 +387,8 @@ which is in the form of a Normal-Gamma distribution, thus the exact posterior is
 	r_{n,k} =& \frac{\pi_{k}p(x^{n} \mid T_{k}, \Theta_{k})}{p(x^{n})} \\
 	=& \frac{\pi_{k}p(x^{n} \mid T_{k}, \Theta_{k})}{\sum_{k=1}^{K} \pi_{k}p(x^{n} \mid T_{k}, \Theta_{k})}.
 \end{align*}
-\par Conditional probability densities (CPDs). The algorithm is implemented as:\lstinputlisting[caption=EM algorithm for mixture of trees with observable variables.]{Code/2_5.py}
+\par The algorithm is implemented below, where the function in \textit{Kruskal\_v1.py} is slightly modified so that the result of the maximum spanning tree can be returned:
+\lstinputlisting[caption=EM algorithm for mixture of trees with observable variables.]{Code/2_5.py}
 
 %%%%% Question 2.5.16
 \noindent\fcolorbox{black}{lightgray}{\begin{minipage}{\textwidth}
