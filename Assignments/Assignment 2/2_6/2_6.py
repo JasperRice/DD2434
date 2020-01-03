@@ -98,12 +98,6 @@ class EM:
             log_likelihood = log_likelihood_new
 
         return self
-    
-    def print(self):
-        print("=> Mean:")
-        print(self.means)
-        print("=> Covariance:")
-        print(self.covs)
 
     def _do_estep(self, X, S):
         """
@@ -132,7 +126,7 @@ class EM:
         
         for k in range(self.n_components):
             mean_expand = np.repeat(np.atleast_2d(self.means[k]), self.n_row, axis=0)
-            r_expand = np.repeat(self.r[:,0].reshape((self.n_row, 1)), self.n_col, axis=1)
+            r_expand = np.repeat(self.r[:,k].reshape((self.n_row, 1)), self.n_col, axis=1)
             variance = np.sum(r_expand * (X - mean_expand)**2, axis=0) / N[k]
             self.covs[k] = np.diag(variance)
 
@@ -205,25 +199,29 @@ plt.scatter(X_2[:, 0], X_2[:, 1], s=S_2, c=colors_2) # the Poisson data is shown
 plt.show()
 
 ###############################################################################################
-
+print("1")
 em = EM(n_components=3, n_iter=1, tol=1e-4, seed=1)
 em.fit(X, S)
 
 # plot: call plot_contours and give it the params updated from EM with 3 components (after 1 iteration)
+# plot_contours(X, S, em.means, em.covs, "Title 1", em.rates)
 plt.show()
 
+print("2")
 em = EM(n_components=3, n_iter=50, tol=1e-4, seed=1)
 em.fit(X, S)
 
 # plot: call plot_contours and give it the params updated from EM with 3 components (after 50 iterations)
 plt.show()
 
+print("3")
 em_2 = EM(n_components=2, n_iter=1, tol=1e-4, seed=1)
 em_2.fit(X, S)
 
 # plot: call plot_contours and give it the params updated from EM with 2 components (after 1 iteration)
 plt.show()
 
+print("4")
 em_2 = EM(n_components=2, n_iter=50, tol=1e-4, seed=1)
 em_2.fit(X_2, S_2)
 
