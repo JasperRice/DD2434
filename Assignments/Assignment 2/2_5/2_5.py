@@ -52,9 +52,11 @@
     and the likelihoods.
     """
 import argparse
+import dendropy
 import numpy as np
 import matplotlib.pyplot as plt
 
+from Tree import TreeMixture, Tree, Node
 
 def save_results(loglikelihood, topology_array, theta_array, filename):
     """ This function saves the log-likelihood vs iteration values,
@@ -110,8 +112,6 @@ def em_algorithm(seed_val, samples, num_clusters, max_num_iter=100):
     # tm.sample_mixtures(num_samples=num_samples, seed_val=seed_val)
 
     loglikelihood = []
-    topology_list = []
-    theta_list = []
     for iter in range(max_num_iter):
         print("==================== "+str(iter)+" ====================")
         # Step 1: Compute the responsibilities
@@ -169,19 +169,6 @@ def em_algorithm(seed_val, samples, num_clusters, max_num_iter=100):
                 for a in range(2):
                     for b in range(2):
                         I[s,t] += q[s,t,a,b] * np.log(q[s,t,a,b] / q_s[s,a] / q_s[t,b])
-        # for k in range(num_clusters):
-        #     for s in range(num_nodes):
-        #         for t in range(num_nodes):
-        #             ifBreak = False
-        #             for a in range(2):
-        #                 for b in range(2):
-        #                     if q[s,t,a,b,k] is 0:
-        #                         I[s,t,k] = 0
-        #                         ifBreak = True
-        #                         break
-        #                     I[s,t,k] += q[s,t,a,b,k] * np.log(q[s,t,a,b,k] / q_s[s,a,k] / q_s[t,b,k])
-        #                 if ifBreak:
-        #                     break
 
         clusters = []
         for k in range(num_clusters):
@@ -193,6 +180,7 @@ def em_algorithm(seed_val, samples, num_clusters, max_num_iter=100):
             # Step 4: Construct maximum spanning trees
             print("=> Constructing maximum spanning trees...")
             edges = np.array(g.maximum_spanning_tree())[:,0:2]
+            # topology_array = num_nodes * np.ones(num_nodes)
             topology_array = np.zeros(num_nodes)
             topology_array[0] = np.nan
             visit_list = [0]
@@ -206,10 +194,8 @@ def em_algorithm(seed_val, samples, num_clusters, max_num_iter=100):
                     topology_array[int(child)] = cur_node
                     visit_list.append(int(child))
                 if np.size(index) is not 0:
-                    edges = np.delete(edges, index[0], axis=0)
+                    edges = np.delete(edges, index[:,0], axis=0)
 
-            print(edges)
-            print(topology_array)
             tree = Tree()
             tree.load_tree_from_direct_arrays(topology_array)
             tree.k = 2
@@ -223,22 +209,26 @@ def em_algorithm(seed_val, samples, num_clusters, max_num_iter=100):
                 visit_list = visit_list[1:]
                 visit_list = visit_list + cur_node.descendants
                 if cur_node.ancestor is None:
-                    cur_node.cat = q_s[int(cur_node.name),:,k]
+                    cur_node.cat = q_s[int(cur_node.name),:,k].tolist()
                 else:
-                    cur_node.cat = q[int(cur_node.ancestor.name),int(cur_node.name),:,:,k]
+                    cat = q[int(cur_node.ancestor.name),int(cur_node.name),:,:,k]
+                    cur_node.cat = [cat[0].tolist(), cat[1].tolist()]
 
             clusters.append(tree)
         tm.clusters = clusters
     # print("Warning: maxima iterations reached without convergence.")
 
+    print("=> EM finished")
+    topology_list = []
+    theta_list = []
     for t in tm.clusters:
         topology_list.append(t.get_topology_array())
         theta_list.append(t.get_theta_array())
     loglikelihood = np.array(loglikelihood)
     topology_list = np.array(topology_list)
-    theta_list = np.array(theta_list)
+    # theta_list = np.array(theta_list)
 
-    return loglikelihood, topology_list, theta_list
+    return loglikelihood, topology_list, theta_list, tm
 
 
 def main():
@@ -262,21 +252,31 @@ def main():
     args = parser.parse_args()
     print("\tArguments are: ", args)
 
-    print("\n1. Load samples from txt file.\n")
-
-    samples = np.loadtxt(args.sample_filename, delimiter="\t", dtype=np.int32)
+    simulation = False
+    if simulation:
+        print("\n1. Make new tree and sample.\n")
+        tm_truth = TreeMixture(args.num_clusters, args.num_nodes)
+        tm_truth.simulate_pi(seed_val=args.seed_val)
+        tm_truth.simulate_trees(seed_val=args.seed_val)
+        tm_truth.sample_mixtures(args.num_samples, seed_val=args.seed_val)
+    else:
+        print("\n1. Load tree from file.\n")
+        tm_truth = TreeMixture(0, 0)
+        tm_truth.load_mixture(args.real_values_filename)
+    samples = tm_truth.samples
     num_samples, num_nodes = samples.shape
     print("\tnum_samples: ", num_samples, "\tnum_nodes: ", num_nodes)
     print("\tSamples: \n", samples)
 
-    print("\n2. Run EM Algorithm.\n")
+    # print("\n1. Load samples from txt file.\n")
+    # samples = np.loadtxt(args.sample_filename, delimiter="\t", dtype=np.int32)
+    # num_samples, num_nodes = samples.shape
 
-    loglikelihood, topology_array, theta_array = em_algorithm(args.seed_val, samples, num_clusters=args.num_clusters)
+    print("\n2. Run EM Algorithm.\n")
+    loglikelihood, topology_array, theta_array, tm = em_algorithm(args.seed_val, samples, num_clusters=args.num_clusters)
 
     print("\n3. Save, print and plot the results.\n")
-
-    save_results(loglikelihood, topology_array, theta_array, args.output_filename)
-
+    # save_results(loglikelihood, topology_array, theta_array, args.output_filename)
     for i in range(args.num_clusters):
         print("\n\tCluster: ", i)
         print("\tTopology: \t", topology_array[i])
@@ -299,10 +299,42 @@ def main():
         print("\tComparing the results with real values...")
 
         print("\t4.1. Make the Robinson-Foulds distance analysis.\n")
-        # TODO: Do RF Comparison
+        N = len(samples)
+        K = tm_truth.num_clusters
+        A = tm_truth.clusters[0].k
+        tns = dendropy.TaxonNamespace()
+        for k in range(K):
+            for j in range(K):
+                t_0 = tm.clusters[k]
+                t_t = tm_truth.clusters[j]
+                t_0.get_tree_newick()
+                t_t.get_tree_newick()
+                t_0 = dendropy.Tree.get(data=t_0.newick, schema="newick", taxon_namespace=tns)
+                t_t = dendropy.Tree.get(data=t_t.newick, schema="newick", taxon_namespace=tns)
+                print("\tRF distance result-truth %d - %d:   "%(k,j), dendropy.calculate.treecompare.symmetric_difference(t_0, t_t))
+
 
         print("\t4.2. Make the likelihood comparison.\n")
-        # TODO: Do Likelihood Comparison
+        post = np.ones((N,K)) # posterior p(x^n|T_k, theta_k)
+        prior = np.ones(N)
+        for n in range(N):
+            x = samples[n]
+            for k in range(K):
+                tree = tm_truth.clusters[k]
+                visit_list = [tree.root] # go through whole tree for posterior p(x^n|T_k, theta_k)
+                while len(visit_list) != 0:
+                    cur_node = visit_list[0]
+                    visit_list = visit_list[1:]
+                    visit_list = visit_list + cur_node.descendants
+                    if cur_node.ancestor: # node with parent
+                        # cat[parent][child] = p(child|parent)
+                        post[n,k] *= cur_node.cat[x[int(cur_node.ancestor.name)]][x[int(cur_node.name)]] 
+                    else: # root node
+                        post[n,k] *= cur_node.cat[x[int(cur_node.name)]]
+            prior[n] *= np.sum(post[n]*tm_truth.pi) # compute prior p(x^n)
+        loglikelihood_truth = np.sum(np.log(prior))
+        print("\tLog-Likelihood EM_result vs truth: %d vs %d"%(loglikelihood[-1], loglikelihood_truth))
+
 
 
 if __name__ == "__main__":

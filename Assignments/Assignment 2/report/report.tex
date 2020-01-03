@@ -153,10 +153,11 @@
 \noindent\fcolorbox{black}{lightgray}{\begin{minipage}{\textwidth}
     \textbf{Question 2.1.3:} \textit{Have you discussed solutions with anybody?}
 \end{minipage}} \\
+\par No.
 
 
 \section{Dependencies in a Directed Graphical Model}
-\image{0.5}{Q2_2}{Mixture of components modeling location and strengths of earthquakes associated with a super-epicentra. In the figure, $\mu_{k} = (\mu_{k,1}, \mu_{k,2})$ and $\tau_{k} = (\tau_{k,1}, \tau_{k,2})$.}
+
 %%%%% Question 2.2.4
 \noindent\fcolorbox{black}{lightgray}{\begin{minipage}{\textwidth}
     \textbf{Question 2.2.4:} \textit{In the graphical model of Figure \ref{fig:Q2_2}, is $\mu_{k} \perp \tau_{k}$ (not conditioned by anything)?}
@@ -180,9 +181,8 @@
     p(\mu_{k}, \tau_{k} \mid X^{1}, \cdots, X^{N}) =& \frac{p\left(\mu_{k}, \tau_{k}, X^{1}, \cdots, X^{N} \right)}{p\left(X^{1}, \cdots , X^{N} \right)} \\
     =& \frac{p(\mu_{k})p(\tau_{k})p\left(X^{1},\cdots,X^{N} \mid \mu_{k}, \tau_{k}\right)}{p\left(X^{1}, \cdots, X^{N}\right)},
 \end{align*}
-which isn't factorized into the product $p(\mu_{k})p(\tau_{k})$, thus $\mu_{k} \perp \tau_{k} \mid X^{1}, \cdots, X^{N}$ is false.
+which isn't factorized into the product $p(\mu_{k})p(\tau_{k})$, thus $\mu_{k} \perp \tau_{k} \mid X^{1}, \cdots, X^{N}$ is false. \\
 
-\image{0.5}{Q2_2_6}{The $K$ super epicentra model with priors.}
 %%%%% Question 2.2.6
 \noindent\fcolorbox{black}{lightgray}{\begin{minipage}{\textwidth}
     \textbf{Question 2.2.6:} \textit{In the graphical model of Figure \ref{fig:Q2_2_6}, is $\mu \perp b^{'}$ (not conditioned by anything)?}
@@ -392,20 +392,86 @@ which is in the form of a Normal-Gamma distribution, thus the exact posterior is
 
 %%%%% Question 2.5.16
 \noindent\fcolorbox{black}{lightgray}{\begin{minipage}{\textwidth}
-    \textbf{Question 2.5.16:} \textit{*}
+    \textbf{Question 2.5.16:} \textit{Apply your algorithm to the provided data and show how well you reconstruct the mixtures. First, compare the real and inferred trees with the unweighted Robinson-Foulds (aka symmetric difference) metric. Do the trees have similar structure (don't worry if the inferred trees don't match with the real trees)? Then, compare the likelihoods of real and inferred mixtures. Finally, simulate more data and analyze the results (try to find some interesting and more challenging cases).}
 \end{minipage}} \\
+\par The provided data are \textit{q\_2\_5\_tm\_10node\_20sample\_4clusters}, \textit{q\_2\_5\_tm\_10node\_50sample\_4clusters}, and \textit{q\_2\_5\_tm\_20node\_20sample\_4clusters}.
+
+\par First, compare the real and inferred trees with the unweighted RF metric, 
+
+\par Then compare the likelihoods of real and inferred mixtures 
+
+\par Finally, simulate 
 
 %%%%% Question 2.5.17
 \noindent\fcolorbox{black}{lightgray}{\begin{minipage}{\textwidth}
-    \textbf{Question 2.5.17:} \textit{*}
+    \textbf{Question 2.5.17:} \textit{Simulate new tree mixtures with different number of nodes, samples and clusters. Try to find some interesting cases. Analyze your results as in the previous question.}
 \end{minipage}} \\
+\par 
 
 
 \section{Super epicentra - EM}
+\image{0.5}{Q2_2}{Mixture of components modeling location and strengths of earthquakes associated with a super-epicentra. In the figure, $\mu_{k} = (\mu_{k,1}, \mu_{k,2})$ and $\tau_{k} = (\tau_{k,1}, \tau_{k,2})$.}
 %%%%% Question 2.6.18
 \noindent\fcolorbox{black}{lightgray}{\begin{minipage}{\textwidth}
     \textbf{Question 2.6.18:} \textit{Derive an EM algorithm for the model.}
 \end{minipage}} \\
+\par The conditional distribution of $X^{n}, S^{n}$ given a particular value for $Z^{n}$ is
+\begin{align*}
+	p(X^{n}, S^{n} \vert Z^{n}_{k}=1) =& \N(X^{n} \vert \mu_{k}, \tau_{k}) \mathrm{Poisson}(S^{n} \vert \lambda_{k}) \\ 
+	=& \frac{\sqrt{\tau_{k,1}\tau_{k,2}}}{2\pi} \exp\left[-\frac{\tau_{k,1}}{2}(X^{n}_{1} - \mu_{k,1})^{2} - \frac{\tau_{k,2}}{2}(X^{n}_{2} - \mu_{k,2})^{2}\right] \frac{\lambda_{k}^{S^{n}}}{S^{n}!} \exp\left[-\lambda_{k}\right] \\
+	=& \frac{\sqrt{\tau_{k,1}\tau_{k,2}}}{2\pi} \frac{\lambda_{k}^{S^{n}}}{S^{n}!} \exp\left[-\frac{\tau_{k,1}}{2}(X^{n}_{1} - \mu_{k,1})^{2} - \frac{\tau_{k,2}}{2}(X^{n}_{2} - \mu_{k,2})^{2} -\lambda_{k}\right]
+\end{align*}
+\par which can also be written in the form
+\begin{align*}
+	p(X^{n}, S^{n} \vert Z^{n}) = \prod_{k=1}^{K} p(X^{n}, S^{n} \vert Z^{n}_{k}=1)^{Z^{n}_{k}}.
+\end{align*}
+\par The joint distribution is given by
+\begin{align*}
+	p(X^{n}, S^{n}, Z^{n}) = p(Z^{n}) p(X^{n}, S^{n} \vert Z^{n}),
+\end{align*}
+and the marginal distribution of $X^{n}, S^{n}$ is then obtained by summing the joint distribution over all possible states of $Z^{n}$ to give
+\begin{align*}
+	p(X^{n}, S^{n}) = \sum_{k=1}^{K} \pi_{k} p(X^{n}, S^{n} \vert Z^{n}_{k}=1).
+\end{align*}
+\par Another quantity that will play an important role is the conditional probability of $Z^{n}$ given $X^{n}, S^{n}$. We shall use $\gamma(Z^{n}_{k})$ to denote $p(Z^{n}_{k} = 1 \vert X^{n}, S^{n})$, whose value can be found using Bayes' theorem
+\begin{align*}
+	\gamma(Z^{n}_{k}) \equiv p(Z^{n}_{k} = 1 \vert X^{n}, S^{n}) =& \frac{p(Z^{n}_{k}=1)p(X^{n}, S^{n} \vert Z^{n}_{k} = 1)}{\sum_{j=1}^{K}p(Z^{n}_{j}=1)p(X^{n}, S^{n} \vert Z^{n}_{j}=1)} \\
+	=& \frac{\pi_{k} p(X^{n}, S^{n} \vert Z^{n}_{k} = 1)}{\sum_{j=1}^{K}\pi_{j} p(X^{n}, S^{n} \vert Z^{n}_{j}=1)}.
+\end{align*}
+\begin{enumerate}
+	\item Initialize the means $\mu_{k}$, precision $\tau_{k}$, Poisson parameter $\lambda_{k}$ and mixing coefficients $\pi_{k}$, and evaluate the initial value of the log likelihood.
+	\item \textbf{E Step.} Evaluate the responsibilities using the current parameter values
+	% \par Evaluate $p(\mathbf{Z} \vert \mathbf{X}, \mathbf{S}, \bm{\theta}^{\mathrm{old}})$
+	\begin{align*}
+		\gamma(Z^{n}_{k}) =& \frac{\pi_{k} p(X^{n}, S^{n} \vert Z^{n}_{k} = 1)}{\sum_{j=1}^{K}\pi_{j} p(X^{n}, S^{n} \vert Z^{n}_{j}=1)}.
+	\end{align*}
+	\item \textbf{M Step.} Re-estimate the parameters using the current responsibilities
+%	\par Evaluate $\bm{\theta}^{\mathrm{new}}$ given by
+%	\begin{align*}
+%		\bm{\theta}^{\mathrm{new}} =& \arg_{\bm{\theta}}\max \mathcal{Q}(\bm{\theta}, \bm{\theta}^{\mathrm{old}})
+%	\end{align*}
+%	where
+%	\begin{align*}
+%		\mathcal{Q}(\bm{\theta}, \bm{\theta}^{\mathrm{old}}) = \sum_{\mathbf{Z}} p(\mathbf{Z} \vert \mathbf{X}, \mathbf{S}, \bm{\theta}^{\mathrm{old}}) \ln p(\mathbf{X}, \mathbf{S}, \mathbf{Z} \vert \bm{\theta}).
+%	\end{align*}
+	\begin{align*}
+		\mu_{k}^{\mathrm{new}} =& \frac{1}{N_{k}} \sum_{n=1}^{N} \gamma(Z^{n}_{k}) X^{n} \\
+		\tau_{k,1}^{\mathrm{new}} =& \frac{N_{k}}{\sum_{n=1}^{N} \gamma(Z^{n}_{k}) (X^{n}_{1} - \mu_{k,1}^{\mathrm{new}})^{2}} \\
+		\tau_{k,2}^{\mathrm{new}} =& \frac{N_{k}}{\sum_{n=1}^{N} \gamma(Z^{n}_{k}) (X^{n}_{2} - \mu_{k,2}^{\mathrm{new}})^{2}} \\
+		\lambda_{k}^{\mathrm{new}} =& \frac{1}{N_{k}} \sum_{n=1}^{N} \gamma(Z^{n}_{k}) S^{n} \\
+		\pi_{k}^{\mathrm{new}} =& \frac{N_{k}}{N}
+	\end{align*}
+	where
+	\begin{align*}
+		N_{k} =& \sum_{n=1}^{N} \gamma(Z^{n}_{k}).
+	\end{align*}
+	\item Evaluate the log likelihood
+	\begin{align*}
+		\ln p(\X, \mathbf{S} \vert \bm{\mu}, \bm{\tau}, \bm{\lambda}, \bm{\pi}) = \sum_{n=1}^{N} \ln\left\{ \sum_{k=1}^{K} \pi_{k}\N(X^{n} \vert \mu_{k}, \tau_{k})\mathrm{Poisson}(S^{n} \vert \lambda_{k}) \right\}
+	\end{align*}
+	and check for convergence of either the parameters or the log likelihood. If the convergence criterion is not satisfied return to step 2.
+\end{enumerate}
+
 
 %%%%% Question 2.6.19
 \noindent\fcolorbox{black}{lightgray}{\begin{minipage}{\textwidth}
@@ -419,7 +485,7 @@ which is in the form of a Normal-Gamma distribution, thus the exact posterior is
 
 
 \section{Super epicentra - VI}
-
+\image{0.5}{Q2_2_6}{The $K$ super epicentra model with priors.}
 
 \section{Sampling from a tree GM}
 
