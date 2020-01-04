@@ -396,12 +396,30 @@ which is in the form of a Normal-Gamma distribution, thus the exact posterior is
 \end{minipage}} \\
 \par The provided data are , \textit{q\_2\_5\_tm\_10node\_50sample\_4clusters}, and \textit{q\_2\_5\_tm\_20node\_20sample\_4clusters}.
 \begin{itemize}
-	\item \textit{q\_2\_5\_tm\_10node\_20sample\_4clusters}: The comparison of the real and inferred trees with unweighted RF metric is show in table 
+	\item \textbf{\textit{q\_2\_5\_tm\_10node\_20sample\_4clusters}:} The result of the EM algorithm is illustrated in fig~\ref{fig:D10_N20_K4}.
+	\image{0.9}{D10_N20_K4}{The likelihood and log-likelihood at each iteration of the EM algorithm for data \textit{q\_2\_5\_tm\_10node\_20sample\_4clusters}.}
+	\par The comparison of the real and inferred trees with unweighted RF metric is show in tab~ \ref{tab:RF_D10_N20_K4}.
+	\begin{table}[!ht]
+		\centering
+		\caption{RF distance between the true tree mixture and the result obtained from the EM algorithm for data \textit{q\_2\_5\_tm\_10node\_20sample\_4clusters}, where the rows represents the obtained tree mixture and the columns represents the true tree mixture.}
+		\begin{tabular}{c|cccc}
+			 & 0 & 1 & 2 & 3 \\
+			 \hline
+			 0 & 9 & 8 & 10 & 10 \\
+			 1 & 9 & 12 & 10 & 10 \\
+			 2 & 8 & 7 & 9 & 9 \\
+			 3 & 8 & 11 & 11 & 9
+		\end{tabular}
+		\label{tab:RF_D10_N20_K4}
+	\end{table}
+	\par The log-likelihood of the result tree mixture obtained by the EM algorithm is $-119.724756$, while the log-likelihood of the ground truth is $-113.143100$.
+	\par Finally, by simulating $1000$ data points from the true tree mixture, the result is shown as 
+
+	\item \textbf{\textit{q\_2\_5\_tm\_20node\_50sample\_4clusters}:}
+	
+	\item \textbf{\textit{q\_2\_5\_tm\_20node\_20sample\_4clusters}:}
+
 \end{itemize}
-
-\par Then compare the likelihoods of real and inferred mixtures 
-
-\par Finally, simulate 
 
 %%%%% Question 2.5.17
 \noindent\fcolorbox{black}{lightgray}{\begin{minipage}{\textwidth}
@@ -439,8 +457,18 @@ and the marginal distribution of $X^{n}, S^{n}$ is then obtained by summing the 
 	\gamma(Z^{n}_{k}) \equiv p(Z^{n}_{k} = 1 \vert X^{n}, S^{n}) =& \frac{p(Z^{n}_{k}=1)p(X^{n}, S^{n} \vert Z^{n}_{k} = 1)}{\sum_{j=1}^{K}p(Z^{n}_{j}=1)p(X^{n}, S^{n} \vert Z^{n}_{j}=1)} \\
 	=& \frac{\pi_{k} p(X^{n}, S^{n} \vert Z^{n}_{k} = 1)}{\sum_{j=1}^{K}\pi_{j} p(X^{n}, S^{n} \vert Z^{n}_{j}=1)}.
 \end{align*}
-\par ?????
-\par EM algorithm:
+\par The M-step in general EM algorithm is to evaluate $\bm{\theta}^{\mathrm{new}}$ given by
+\begin{align*}
+	\bm{\theta}^{\mathrm{new}} =& \arg_{\bm{\theta}}\max \mathcal{Q}(\bm{\theta}, \bm{\theta}^{\mathrm{old}})
+\end{align*}
+where
+\begin{align*}
+	\mathcal{Q}(\bm{\theta}, \bm{\theta}^{\mathrm{old}}) =& \sum_{\mathbf{Z}} p(\mathbf{Z} \vert \mathbf{X}, \mathbf{S}, \bm{\theta}^{\mathrm{old}}) \ln p(\mathbf{X}, \mathbf{S}, \mathbf{Z} \vert \bm{\theta}) \\
+	=& \sum_{\mathbf{Z}} p(\mathbf{Z} \vert \mathbf{X}, \mathbf{S}, \bm{\theta}^{\mathrm{old}}) \ln p(\mathbf{Z} \vert \bm{\theta}) p(\mathbf{X}, \mathbf{S} \vert \mathbf{Z}, \bm{\theta})
+\end{align*}
+\par Setting the derivatives of  with respect to (only for the cases that $Z^{n} = 1$). ?????
+
+\par \textbf{EM algorithm:}
 \begin{enumerate}
 	\item Initialize the means $\mu_{k}$, precision $\tau_{k}$, Poisson parameter $\lambda_{k}$ and mixing coefficients $\pi_{k}$, and evaluate the initial value of the log likelihood.
 	\item \textbf{E Step.} Evaluate the responsibilities using the current parameter values
@@ -449,14 +477,6 @@ and the marginal distribution of $X^{n}, S^{n}$ is then obtained by summing the 
 		\gamma(Z^{n}_{k}) =& \frac{\pi_{k} p(X^{n}, S^{n} \vert Z^{n}_{k} = 1)}{\sum_{j=1}^{K}\pi_{j} p(X^{n}, S^{n} \vert Z^{n}_{j}=1)}.
 	\end{align*}
 	\item \textbf{M Step.} Re-estimate the parameters using the current responsibilities
-%	\par Evaluate $\bm{\theta}^{\mathrm{new}}$ given by
-%	\begin{align*}
-%		\bm{\theta}^{\mathrm{new}} =& \arg_{\bm{\theta}}\max \mathcal{Q}(\bm{\theta}, \bm{\theta}^{\mathrm{old}})
-%	\end{align*}
-%	where
-%	\begin{align*}
-%		\mathcal{Q}(\bm{\theta}, \bm{\theta}^{\mathrm{old}}) = \sum_{\mathbf{Z}} p(\mathbf{Z} \vert \mathbf{X}, \mathbf{S}, \bm{\theta}^{\mathrm{old}}) \ln p(\mathbf{X}, \mathbf{S}, \mathbf{Z} \vert \bm{\theta}).
-%	\end{align*}
 	\begin{align*}
 		\mu_{k}^{\mathrm{new}} =& \frac{1}{N_{k}} \sum_{n=1}^{N} \gamma(Z^{n}_{k}) X^{n} \\
 		\tau_{k,1}^{\mathrm{new}} =& \frac{N_{k}}{\sum_{n=1}^{N} \gamma(Z^{n}_{k}) (X^{n}_{1} - \mu_{k,1}^{\mathrm{new}})^{2}} \\
@@ -486,6 +506,42 @@ and the marginal distribution of $X^{n}, S^{n}$ is then obtained by summing the 
 \noindent\fcolorbox{black}{lightgray}{\begin{minipage}{\textwidth}
     \textbf{Question 2.6.20:} \textit{Apply it to the data provided separately, give an account of the success, and provide visualizations for a couple of examples.}
 \end{minipage}} \\
+\begin{figure}[!ht]
+	\centering
+	\begin{subfigure}{.49\textwidth}
+		\centering
+		\includegraphics[width=\linewidth]{2_6_EM1}
+		\caption{Data set 1.}
+	\end{subfigure}
+	\begin{subfigure}{.49\textwidth}
+		\centering
+		\includegraphics[width=\linewidth]{2_6_EM2}
+		\caption{Data set 2.}
+	\end{subfigure}
+	\caption{Ground truth for data sets}
+	\label{fig:2_6_Truth}
+\end{figure}
+\begin{figure}[!ht]
+	\centering
+	\begin{subfigure}{.49\textwidth}
+		\centering
+		\includegraphics[width=\linewidth]{2_6_EM1_1}
+	\end{subfigure}
+	\begin{subfigure}{.49\textwidth}
+		\centering
+		\includegraphics[width=\linewidth]{2_6_EM1_50}
+	\end{subfigure}
+	\begin{subfigure}{.49\textwidth}
+		\centering
+		\includegraphics[width=\linewidth]{2_6_EM2_1}
+	\end{subfigure}
+	\begin{subfigure}{.49\textwidth}
+		\centering
+		\includegraphics[width=\linewidth]{2_6_EM2_50}
+	\end{subfigure}
+	\caption{Result of the EM algorithm for different data sets.}
+	\label{fig:2_6_Result}
+\end{figure}
 
 
 \section{Super epicentra - VI}
@@ -494,6 +550,21 @@ and the marginal distribution of $X^{n}, S^{n}$ is then obtained by summing the 
 \noindent\fcolorbox{black}{lightgray}{\begin{minipage}{\textwidth}
     \textbf{Question 2.7.21:} \textit{Derive a VI algorithm that estimates the posterior distribution for this model.}
 \end{minipage}} \\
+\par The likelihood
+\begin{align*}
+	p(X^{n}, S^{n} \vert ???) =& \pi_{k}
+\end{align*}
+\par Since $\pi \sim \mathrm{Dir}(\alpha)$, we have
+\begin{align*}
+	p(\pi \vert \alpha) =& p(\pi_{1}, \cdots, \pi_{K} \vert \alpha_{1}, \cdots, \alpha_{K}) \\
+	=& \frac{\Gamma\left(\sum_{k=1}^{K} \alpha_{k}\right)}{\prod_{k=1}^{K}\Gamma(\alpha_{k})} \prod_{k=1}^{K} \pi_{k}^{\alpha_{k}-1} \\
+	=& \frac{1}{B(\alpha)} \prod_{k=1}^{K} \pi_{k}^{\alpha_{k}-1}
+\end{align*}
+
+\par We define:
+\begin{align*}
+	q(\pi, \mu, \tau, \lambda) = q(\pi) q(\tau) q(\mu \vert \tau) q(\lambda)
+\end{align*}
 
 \section{Sampling from a tree GM}
 %%%%% Question 2.8.22

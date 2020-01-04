@@ -1,3 +1,6 @@
+import pkg_resources
+pkg_resources.require("matplotlib==2.1.1")
+
 import matplotlib.mlab as mlab
 import matplotlib.pyplot as plt
 import numpy as np
@@ -204,7 +207,7 @@ em = EM(n_components=3, n_iter=1, tol=1e-4, seed=1)
 em.fit(X, S)
 
 # plot: call plot_contours and give it the params updated from EM with 3 components (after 1 iteration)
-# plot_contours(X, S, em.means, em.covs, "Title 1", em.rates)
+plot_contours(X, S, em.means, em.covs, "Result after 1 iteration for data set 1.", em.rates)
 plt.show()
 
 print("2")
@@ -212,13 +215,15 @@ em = EM(n_components=3, n_iter=50, tol=1e-4, seed=1)
 em.fit(X, S)
 
 # plot: call plot_contours and give it the params updated from EM with 3 components (after 50 iterations)
+plot_contours(X, S, em.means, em.covs, "Result after 50 iterations for data set 1.", em.rates)
 plt.show()
 
 print("3")
 em_2 = EM(n_components=2, n_iter=1, tol=1e-4, seed=1)
-em_2.fit(X, S)
+em_2.fit(X_2, S_2)
 
 # plot: call plot_contours and give it the params updated from EM with 2 components (after 1 iteration)
+plot_contours(X_2, S_2, em_2.means, em_2.covs, "Result after 1 iteration for data set 2.", em_2.rates)
 plt.show()
 
 print("4")
@@ -226,6 +231,7 @@ em_2 = EM(n_components=2, n_iter=50, tol=1e-4, seed=1)
 em_2.fit(X_2, S_2)
 
 # plot: call plot_contours and give it the params updated from EM with 2 components (after 50 iterations)
+plot_contours(X_2, S_2, em_2.means, em_2.covs, "Result after 50 iteration for data set 2.", em_2.rates)
 plt.show()
 
 
