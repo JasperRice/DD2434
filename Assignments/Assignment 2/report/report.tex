@@ -79,10 +79,12 @@
 }
 
 % A bunch of definitions that make my life easier
-\newcommand{\D}{\mathcal{D}}
-\newcommand{\N}{\mathcal{N}}
 \newcommand{\A}{\mathbf{A}}
+\newcommand{\D}{\mathcal{D}}
+\newcommand{\E}{\mathbb{E}}
 \newcommand{\I}{\mathbf{I}}
+\newcommand{\N}{\mathcal{N}}
+\renewcommand{\S}{\mathbf{S}}
 \newcommand{\T}{\mathbf{T}}
 \renewcommand{\t}{\mathbf{t}}
 \newcommand{\W}{\mathbf{W}}
@@ -91,13 +93,17 @@
 \newcommand{\x}{\mathbf{x}}
 \newcommand{\Y}{\mathbf{Y}}
 \newcommand{\y}{\mathbf{y}}
+\newcommand{\Z}{\mathbf{Z}}
 \newcommand{\0}{\mathbf{0}}
 
 \renewcommand{\(}{\left(}
 \renewcommand{\)}{\right)}
 
-\DeclareMathOperator{\NormalGamma}{NormalGamma}
+\DeclareMathOperator{\const}{const}
+\DeclareMathOperator{\Dir}{Dir}
 \DeclareMathOperator{\Gam}{Gam}
+\DeclareMathOperator{\NormalGamma}{NormalGamma}
+\DeclareMathOperator{\Poisson}{Poisson}
 \DeclareMathOperator{\Tr}{Tr}
 
 \renewcommand{\vec}{\mathrm{vec}}
@@ -394,7 +400,6 @@ which is in the form of a Normal-Gamma distribution, thus the exact posterior is
 \noindent\fcolorbox{black}{lightgray}{\begin{minipage}{\textwidth}
     \textbf{Question 2.5.16:} \textit{Apply your algorithm to the provided data and show how well you reconstruct the mixtures. First, compare the real and inferred trees with the unweighted Robinson-Foulds (aka symmetric difference) metric. Do the trees have similar structure (don't worry if the inferred trees don't match with the real trees)? Then, compare the likelihoods of real and inferred mixtures. Finally, simulate more data and analyze the results (try to find some interesting and more challenging cases).}
 \end{minipage}} \\
-\par The provided data are , \textit{q\_2\_5\_tm\_10node\_50sample\_4clusters}, and \textit{q\_2\_5\_tm\_20node\_20sample\_4clusters}.
 \begin{itemize}
 	\item \textbf{\textit{q\_2\_5\_tm\_10node\_20sample\_4clusters}:} The result of the EM algorithm is illustrated in fig~\ref{fig:D10_N20_K4}.
 	\image{0.9}{D10_N20_K4}{The likelihood and log-likelihood at each iteration of the EM algorithm for data \textit{q\_2\_5\_tm\_10node\_20sample\_4clusters}.}
@@ -550,21 +555,109 @@ where
 \noindent\fcolorbox{black}{lightgray}{\begin{minipage}{\textwidth}
     \textbf{Question 2.7.21:} \textit{Derive a VI algorithm that estimates the posterior distribution for this model.}
 \end{minipage}} \\
-\par The likelihood
-\begin{align*}
-	p(X^{n}, S^{n} \vert ???) =& \pi_{k}
-\end{align*}
+\par The VI algorithm is derived based on \cite{Bishop}.
 \par Since $\pi \sim \mathrm{Dir}(\alpha)$, we have
 \begin{align*}
 	p(\pi \vert \alpha) =& p(\pi_{1}, \cdots, \pi_{K} \vert \alpha_{1}, \cdots, \alpha_{K}) \\
 	=& \frac{\Gamma\left(\sum_{k=1}^{K} \alpha_{k}\right)}{\prod_{k=1}^{K}\Gamma(\alpha_{k})} \prod_{k=1}^{K} \pi_{k}^{\alpha_{k}-1} \\
-	=& \frac{1}{B(\alpha)} \prod_{k=1}^{K} \pi_{k}^{\alpha_{k}-1}
+	=& \frac{1}{B(\alpha)} \prod_{k=1}^{K} \pi_{k}^{\alpha_{k}-1}.
+\end{align*}
+\par Also, for other latent variables, we have
+\begin{align*}
+	p(\mu_{k} \vert \tau_{k}) =& \N(\mu_{k} \vert \mu, (C \tau_{k})^{-1}) \\
+	p(\tau_{k}) =& \Gam(\tau_{k} \vert \alpha', \beta') \\
+	p(\lambda_{k}) =& \Gam(\lambda_{k} \vert \alpha_{0}, \beta_{0}),
+\end{align*}
+and from the previous question, we know that
+\begin{align*}
+	p(X^{n}, S^{n} \vert Z^{n}_{k}=1, \mu_{k}, \tau_{k}, \lambda_{k}) =& \N(X^{n} \vert \mu_{k}, \tau_{k}) \mathrm{Poisson}(S^{n} \vert \lambda_{k}) \\ 
+	=& \frac{\sqrt{\tau_{k,1}\tau_{k,2}}}{2\pi} \exp\left[-\frac{\tau_{k,1}}{2}(X^{n}_{1} - \mu_{k,1})^{2} - \frac{\tau_{k,2}}{2}(X^{n}_{2} - \mu_{k,2})^{2}\right] \frac{\lambda_{k}^{S^{n}}}{S^{n}!} \exp\left[-\lambda_{k}\right] \\
+	=& \frac{\sqrt{\tau_{k,1}\tau_{k,2}}}{2\pi} \frac{\lambda_{k}^{S^{n}}}{S^{n}!} \exp\left[-\frac{\tau_{k,1}}{2}(X^{n}_{1} - \mu_{k,1})^{2} - \frac{\tau_{k,2}}{2}(X^{n}_{2} - \mu_{k,2})^{2} -\lambda_{k}\right].
+\end{align*}
+\par The joint distribution of all of the random variables is given by
+\begin{align*}
+	p(\X, \S, \Z, \pi, \mu, \tau, \lambda) = p(\X|\Z,\mu,\tau) p(\S|\Z,\lambda) p(\Z|\pi) p(\pi) p(\mu|\tau) p(\tau) p(\lambda).
+\end{align*}
+\par A variational distribution which factorizes between the latent variables and the parameters is given by
+\begin{align*}
+	q(\Z, \pi, \mu, \tau, \lambda) = q(\Z) q(\pi, \mu, \tau, \lambda).
+\end{align*}
+\par The log of the optimized factor is then given by
+\begin{align*}
+	\ln q^{*}(\Z) =& \mathbb{E}_{\pi, \mu, \tau, \lambda}[\ln p(\X, \S, \Z, \pi, \mu, \tau, \lambda)] + \const \\
+	=& \mathbb{E}_{\pi}[\ln p(\Z \vert \pi)] + \mathbb{E}_{\mu, \tau}[\ln p(\X \vert \Z, \mu, \tau)] + \mathbb{E}_{\lambda}[\ln p(\S \vert \Z, \lambda)] + \const \\
+	=& \sum_{n=1}^{N}\sum_{k=1}^{K} Z^{n}_{k} \ln \rho_{n,k} + \const
+\end{align*}
+where we have defined
+\begin{align*}
+	\ln \rho_{n,k} =& \mathbb{E}\left[\ln \pi_{k}\right] + \frac{1}{2}\E\left[\ln\vert\tau_{k}\vert\right] - \ln(2\pi) \\ & - \frac{1}{2} \E_{\mu_{k}, \tau_{k}}\left[ (X^{n} - \mu_{k})^{\mathrm{T}}\tau_{k}(X^{n} - \mu_{k}) \right] \\ & + S^{n} \mathbb{E}[\ln \lambda_{k}] - \mathbb{E}[\lambda_{k}] - \ln\left(S^{n}!\right).
+\end{align*}
+\par Taking the exponential of both sides of the log of the optimized factor and normalize it, we obtain
+\begin{align*}
+	q^{*}(\Z) = \prod_{n=1}^{N}\prod_{k=1}^{K} r_{nk}^{Z^{n}_{k}}
+\end{align*}
+where
+\begin{align*}
+	r_{nk} = \frac{\rho_{nk}}{\sum_{j=1}^{K}\rho_{nj}}.
+\end{align*}
+\par For the discrete distribution $q^{*}(\Z)$ we have the standard result
+\begin{align*}
+	\mathbb{E}[Z^{n}_{k}] = r_{nk}
+\end{align*}
+from which we see that the quantities $r_{nk}$ are playing the role of responsibilities. Define 
+\begin{align*}
+	N_{k} =& \sum_{n=1}^{N} r_{nk}.
+\end{align*}
+\par Now let us consider the factor $q(\pi, \mu, \tau, \lambda)$ in the variational posterior distribution, we have
+\begin{align*}
+	\ln q^{*}(\pi, \mu, \tau, \lambda) =& \ln p(\pi) + \mathbb{E}_{\Z}[\ln p(\Z \vert \pi)] + \const \\ & + \sum_{k=1}^{K}\ln p(\mu_{k}, \tau_{k}) + \sum_{k=1}^{K}\sum_{n=1}^{N} \mathbb{E}[Z^{n}_{k}]\ln \N(X^{n} \vert \mu_{k}, \tau_{k}^{-1}) \\ & + \sum_{k=1}^{K}\ln p(\lambda_{k}) + \sum_{k=1}^{K}\sum_{n=1}^{N}\mathbb{E}[Z^{n}_{k}]\ln\Poisson(S^{n} \vert \lambda_{k}).
+\end{align*}
+\par Since the right-hand side of this expression decomposes into a sum of terms involving only $\pi$ together with terms only involving $\mu$ and $\tau$ and terms only involving $\lambda$, which implies that the variational posterior $q(\pi, \mu, \tau, \lambda)$ factorizes to give $q(\pi)q(\mu, \tau)q(\lambda)$, and by summing over $k$ of terms involving $\mu_{k}$ and $\tau_{k}$, and $\lambda_{k}$ leads to the further factorization
+\begin{align*}
+	q(\pi, \mu, \tau, \lambda) = q(\pi) \prod_{k=1}^{K} q(\mu_{k}, \tau_{k}) q(\lambda_{k}).
+\end{align*}
+\begin{itemize}
+\item Identifying the terms that depend on $\pi$, we have
+\begin{align*}
+	\ln q^{*}(\pi) = (\alpha - 1) \sum_{k=1}^{K}\ln \pi_{k} + \sum_{k=1}^{K}\sum_{n}^{N}r_{nk}\ln \pi_{k} + \const
+\end{align*}
+and taking the exponential of both sides, we have
+\begin{align*}
+	q^{*}(\pi) = \Dir(\pi \vert \alpha^{*})
+\end{align*}
+where $\alpha^{*}$ has components $\alpha^{*}_{k}$ given by
+\begin{align*}
+	\alpha^{*}_{k} = \alpha_{k} + N_{k}.
 \end{align*}
 
-\par We define:
+\item Similarly, by identifying the terms that depends on $\mu_{k}$ and $\tau_{k}$, we have
 \begin{align*}
-	q(\pi, \mu, \tau, \lambda) = q(\pi) q(\tau) q(\mu \vert \tau) q(\lambda)
+	\ln q^{*}(\mu_{k}, \tau_{k}) =& \sum_{n=1}^{N}r_{nk}\left(\frac{1}{2}\ln\tau_{k}-\frac{1}{2}\tau_{k}\left(X^{n}-\mu_{k}\right)^{2}\right) \\ & + \frac{1}{2}\ln\tau_{k} - \frac{1}{2}C(\mu_{k} - \mu)^{2} \\ & + (\alpha'-1)\ln\tau_{k} - \beta'\tau_{k}.
 \end{align*}
+So, we have
+\begin{align*}
+	q^{*}(\mu_{k} \vert \tau_{k}) =& \N(\mu_{k} \vert \mu^{*}, \tau^{*}) \\
+	\tau^{*} =& (C + N_{k})\tau_{k} \\
+	\mu^{*} =& \frac{\left(\tau_{k} \sum_{n=1}^{N} r_{nk}X^{n}\right) + C\tau_{k}\mu}{\tau^{*}},
+\end{align*}
+and
+\begin{align*}
+	q^{*}(\tau_{k}) =& \Gam(\tau_{k} \vert \alpha'^{*}, \beta'^{*}) \\
+	\alpha'^{*} =& \alpha' + N_{k} \\
+	\beta'^{*} =& \beta' + \frac{1}{2}C\mu^{2} + \frac{1}{2}\sum_{n=1}^{N}r_{nk}{X^{n}}^{2}.
+\end{align*}
+
+\item Finally, by identifying the terms that depends on $\lambda_{k}$, we have
+\begin{align*}
+	\ln q^{*}(\lambda_{k}) =& (\alpha_{0}-1)\ln\lambda_{k} - \beta_{0}\lambda_{k} + \const \\ & + \sum_{n=1}^{N}\left(r_{nk}\left(S^{n}\ln\lambda_{k} - \lambda_{k} - \ln \left(S^{n}!\right)\right)\right).
+\end{align*}
+So, we have
+\begin{align*}
+	q^{*}(\lambda_{k}) =& \Gam(\lambda_{k} \vert \alpha_{0}^{*}, \beta_{0}^{*}) \\
+	\alpha_{0}^{*} =& \alpha_{0} + \sum_{n=1}^{N} r_{nk}S^{n} \\
+	\beta_{0}^{*} =& \beta + N_{k}.
+\end{align*}
+\end{itemize}
 
 \section{Sampling from a tree GM}
 %%%%% Question 2.8.22
