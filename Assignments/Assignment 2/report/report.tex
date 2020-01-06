@@ -824,7 +824,19 @@ where
 	p(\theta_{f})p(X_{r,c} \vert Z_{c}=r, \Theta_{r,c}) =& \Bernoulli(X_{r,c} \vert \theta_{f}) \Beta(\theta_{f} \vert a_{f}, b_{f}) \\
 	=& \Beta\left(\theta_{f} \vert a_{f} + \sum_{n=1}^{N} X^{n}_{r,c}, b_{f} + N - \sum_{n=1}^{N} X^{n}_{r,c}\right) \\
 	p(\theta_{r,c})p(X_{r,c} \vert Z_{c}\neq r, \Theta_{r,c}) =& \Bernoulli(X_{r,c} \vert \theta_{r,c}) \Beta(\theta_{r,c} \vert a, b) \\
-	=& \Beta\left(\theta_{r,c} \vert a + \sum_{n=1}^{N} X^{n}_{r,c}, b + N - \sum_{n=1}^{N} X^{n}_{r,c}\right).
+	=& \Beta\left(\theta_{r,c} \vert a + \sum_{n=1}^{N} X^{n}_{r,c}, b + N - \sum_{n=1}^{N} X^{n}_{r,c}\right)
+\end{align*}
+from which we obtain
+\begin{align*}
+	p(\Theta_{r,c})p(X_{r,c} \vert Z_{c}, \Theta_{r,c}) =& \left[\Beta(\theta_{r,c} \vert a, b)\Beta(\theta_{f} \vert a_{f}', b_{f}')\right]^{1-I_{r}(Z_{c})} \\
+	& \left[\Beta(\theta_{f} \vert a_{f}, b_{f}) \Beta(\theta_{r,c}\vert a', b')\right]^{I_{r}(Z_{c})}
+\end{align*}
+where 
+\begin{align*}
+	a_{f}' =& a_{f} + \sum_{n=1}^{N} X^{n}_{r,c} &
+	b_{f}' =& b_{f} + N - \sum_{n=1}^{N} X^{n}_{r,c} \\
+	a' =& a + \sum_{n=1}^{N} X^{n}_{r,c} &
+	b' =& b + N - \sum_{n=1}^{N} X^{n}_{r,c}
 \end{align*}
 \par Also, since the model follows the same structure with Hidden Markov Model (HMM), then the joint distribution of all the random variables is given by
 \begin{align*}
@@ -853,9 +865,9 @@ where
 	=& \sum_{n=1}^{N}\sum_{c=1}^{C}\sum_{r=1}^{R}\frac{1}{NR}\ln\left(1-\left(\frac{2}{3}\right)^{N_{Z_c}(Z_{c+1})}\right) + \const \\
 	 & + \sum_{n=1}^{N}\sum_{c=1}^{C}\sum_{r=1}^{R} \left\{ X^{n}_{r,c}(1 - I_{r}(Z_{c}))\E[\ln \theta_{f}]  + (1-X^{n}_{r,c})(1-I_{r}(Z_{c})) \E[\ln (1-\theta_{k})] \right. \\
 	 & \left. + x^{n}_{r,c}I_{r}(Z_{c})\E[\ln\theta_{r,c}] + (1 - X^{n}_{r,c})I_{r}(Z_{c})\E[\ln(1-\theta_{r,c})]\right\} \\
-	=& \sum_{n=1}^{N}\sum_{r=1}^{R}\sum_{c=1}^{C} \ln\rho_{n,r,c} + \const.
+	=& \sum_{n=1}^{N}\sum_{r=1}^{R}\sum_{c=1}^{C} \ln\rho_{n,r,c} + \const
 \end{align*}
-\par Then take the exponential of both side of the equation and normalize it, we obtain
+where could have $\ln(0)$ problem, which can be solved in practice by calculating $\ln(\textit{sys.float\_info.epsilon})$ instead. Then take the exponential of both side of the equation and normalize it, we obtain
 \begin{align*}
 	q^{*}(Z) = \prod_{n=1}^{N}\prod_{r=1}^{R}\prod_{c=1}^{C}r_{n,r,c}
 \end{align*}
@@ -866,7 +878,20 @@ where
 
 \par Then for $q(\Theta)$, we have
 \begin{align*}
-	\ln q^{*}(\Theta) =& \sum_{r=1}^{R}\sum_{c=1}^{C}
+	\ln q^{*}(\Theta_{r,c}) =& \E[1-I_{r}(Z_{c})] \ln\left[\Beta(\theta_{r,c} \vert a, b)\Beta(\theta_{f} \vert a_{f}', b_{f}')\right] \\ 
+	& + \E[I_{r}(Z_{c})] \ln\left[\Beta(\theta_{f} \vert a_{f}, b_{f}) \Beta(\theta_{r,c}\vert a', b')\right].
+\end{align*}
+\par So, we have 
+\begin{align*}
+	q^{*}(\Theta_{r,c}) =& q^{*}(\theta_{f})q^{*}(\theta_{r,c}) \\
+	=& \Beta(\theta_{f} \vert a_{f}^{*}, b_{f}^{*}) \Beta(\theta_{r,c} \vert a_{r,c}^{*}, b_{r,c}^{*})
+\end{align*}
+where
+\begin{align*}
+	a_{f}^{*} =& \E[I_{r}(Z_{c})](a_{f}-1) + \E[1-I_{r}(Z_{c})](a_{f}'-1) + 1 \\
+	b_{f}^{*} =& \E[I_{r}(Z_{c})](b_{f}-1) + \E[1-I_{r}(Z_{c})](b_{f}'-1) + 1 \\
+	a_{r,c}^{*} =& \E[I_{r}(Z_{c})](a' - 1) + \E[1 - I_{r}(Z_{c})](a-1) + 1 \\
+	b_{r,c}^{*} =& \E[I_{r}(Z_{c})](b' - 1) + \E[1 - I_{r}(Z_{c})](b-1) + 1
 \end{align*}
 
 
