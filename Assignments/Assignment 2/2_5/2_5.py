@@ -235,7 +235,7 @@ def em_helper(tm, samples, num_clusters, max_num_iter=10):
                     cur_node.cat = q_s[int(cur_node.name),:,k].tolist()
                 else:
                     cat = q[int(cur_node.ancestor.name),int(cur_node.name),:,:,k]
-                    cur_node.cat = [cat[0].tolist(), cat[1].tolist()]
+                    cur_node.cat = [cat[0], cat[1]]
 
             clusters.append(tree)
         tm.clusters =clusters
@@ -246,21 +246,22 @@ def em_helper(tm, samples, num_clusters, max_num_iter=10):
 def main():
     # Code to process command line arguments
     parser = argparse.ArgumentParser(description='EM algorithm for likelihood of a tree GM.')
-    parser.add_argument('--sample_filename', type=str, default='data/q_2_5_tm_10node_20sample_4clusters.pkl_samples.txt',
+    parser.add_argument('--sample_filename', type=str, default='data/q_2_5_tm_20node_20sample_4clusters.pkl_samples.txt',
                         help='Specify the name of the sample file (i.e data/example_samples.txt)')
-    parser.add_argument('--output_filename', type=str, default='q_2_5_tm_10node_20sample_4clusters_result.txt',
+    parser.add_argument('--real_values_filename', type=str, default='data/q_2_5_tm_20node_20sample_4clusters.pkl',
+                        help='Specify the name of the real values file (i.e data/example_tree_mixture.pkl)')
+    parser.add_argument('--output_filename', type=str, default='q_2_5_tm_20node_20sample_4clusters_result.txt',
                         help='Specify the name of the output file (i.e data/example_results.txt)')
     parser.add_argument('--num_nodes', type=int, default=10,
                         help='Specify the number of nodes of trees (i.e 10)')
-    parser.add_argument('--num_clusters', type=int, default=4, 
+    parser.add_argument('--num_clusters', type=int, default=10,
                         help='Specify the number of clusters (i.e 3)')
-    parser.add_argument('--seed_val', type=int, default=42,
+    parser.add_argument('--seed_val', type=int, default=123,
                         help='Specify the seed value for reproducibility (i.e 42)')
-    parser.add_argument('--real_values_filename', type=str, default='data/q_2_5_tm_10node_20sample_4clusters.pkl',
-                        help='Specify the name of the real values file (i.e data/example_tree_mixture.pkl)')
-    parser.add_argument('--num_samples', type=int, default=1000,
+    parser.add_argument('--if_sample', type=bool, default=True,
+                        help='Specify whether the sampling is enabled (i.e False)')
+    parser.add_argument('--num_samples', type=int, default=50,
                         help='Specify the number of samples if sampling is enabled (i.e 1000)')
-
     # You can add more default parameters if you want.
 
     print("Hello World!")
@@ -271,25 +272,21 @@ def main():
     args = parser.parse_args()
     print("\tArguments are: ", args)
 
-    ifSample = True
-    if ifSample:
+    if args.if_sample:
         print("\n1. Make new tree and sample.\n")
         tm_truth = TreeMixture(num_clusters=args.num_clusters, num_nodes=args.num_nodes)
         tm_truth.simulate_pi(seed_val=args.seed_val)
         tm_truth.simulate_trees(seed_val=args.seed_val)
         tm_truth.sample_mixtures(args.num_samples, seed_val=args.seed_val)
     else:
-        print("\n1. Load tree from file.\n")
+        print("\n1. Load true tree from file.\n")
         tm_truth = TreeMixture(0, 0)
         tm_truth.load_mixture(args.real_values_filename)
+    print("Load samples.")
     samples = tm_truth.samples
     num_samples, num_nodes = samples.shape
     print("\tnum_samples: ", num_samples, "\tnum_nodes: ", num_nodes)
     print("\tSamples: \n", samples)
-
-    # print("\n1. Load samples from txt file.\n")
-    # samples = np.loadtxt(args.sample_filename, delimiter="\t", dtype=np.int32)
-    # num_samples, num_nodes = samples.shape
 
     print("\n2. Run EM Algorithm.\n")
     loglikelihood, topology_array, theta_array, tm = em_algorithm(args.seed_val, samples, num_clusters=args.num_clusters)
@@ -315,11 +312,14 @@ def main():
 
     print("\n4. Retrieve real results and compare.\n")
     if args.real_values_filename != "":
-        print("\n=> Compare trees and print Robinson-Foulds (RF) distance:\n")
+        print("\n=> Compare trees and print Robinson-Foulds (RF) distance (result v.s truth):\n")
         N = len(samples)
         K = tm_truth.num_clusters
         tns = dendropy.TaxonNamespace()
+        print("  & 0 & 1 & 2 & 3 \\\\")
+        print("\\hline")
         for k in range(K):
+            print(k, end=" & ")
             for j in range(K):
                 t_0 = tm.clusters[k]
                 t_0.get_tree_newick()
@@ -327,28 +327,26 @@ def main():
                 t_t = tm_truth.clusters[j]
                 t_t.get_tree_newick()
                 t_t = dendropy.Tree.get(data=t_t.newick, schema="newick", taxon_namespace=tns)
-                print("\tRF distance result v.s truth: %d - %d: "%(k,j), dendropy.calculate.treecompare.symmetric_difference(t_0, t_t))
+                print(dendropy.calculate.treecompare.symmetric_difference(t_0, t_t), end=" & ")
+            print("\\\\")
 
-        print("\n=> Compare log-likelihood:\n")
-        post = np.ones((N,K)) # posterior p(x^n|T_k, theta_k)
+        print("\n=> Compare log-likelihood (result v.s truth):\n")
+        posterior = np.ones((N,K))
         prior = np.ones(N)
-        for n in range(N):
-            x = samples[n]
-            for k in range(K):
-                tree = tm_truth.clusters[k]
-                visit_list = [tree.root] # go through whole tree for posterior p(x^n|T_k, theta_k)
+        for n, x in enumerate(samples):
+            for k, tree in enumerate(tm_truth.clusters):
+                visit_list = [tree.root]
                 while len(visit_list) != 0:
                     cur_node = visit_list[0]
                     visit_list = visit_list[1:]
                     visit_list = visit_list + cur_node.descendants
-                    if cur_node.ancestor: # node with parent
-                        # cat[parent][child] = p(child|parent)
-                        post[n,k] *= cur_node.cat[x[int(cur_node.ancestor.name)]][x[int(cur_node.name)]] 
-                    else: # root node
-                        post[n,k] *= cur_node.cat[x[int(cur_node.name)]]
-            prior[n] *= np.sum(post[n]*tm_truth.pi) # compute prior p(x^n)
+                    if cur_node.ancestor is None:
+                        posterior[n,k] *= cur_node.cat[x[int(cur_node.name)]]
+                    else:
+                        posterior[n,k] *= cur_node.cat[x[int(cur_node.ancestor.name)]][x[int(cur_node.name)]] 
+            prior[n] *= np.sum(posterior[n] * tm_truth.pi)
         loglikelihood_truth = np.sum(np.log(prior))
-        print("\tLog-Likelihood result vs truth: %f - %f"%(loglikelihood[-1], loglikelihood_truth))
+        print("\t%f : %f"%(loglikelihood[-1], loglikelihood_truth))
 
 
 if __name__ == "__main__":

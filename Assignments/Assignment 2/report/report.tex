@@ -99,6 +99,8 @@
 \renewcommand{\(}{\left(}
 \renewcommand{\)}{\right)}
 
+\DeclareMathOperator{\Beta}{Beta}
+\DeclareMathOperator{\Bernoulli}{Bernoulli}
 \DeclareMathOperator{\const}{const}
 \DeclareMathOperator{\Dir}{Dir}
 \DeclareMathOperator{\Gam}{Gam}
@@ -403,7 +405,7 @@ which is in the form of a Normal-Gamma distribution, thus the exact posterior is
 \begin{itemize}
 	\item \textbf{\textit{q\_2\_5\_tm\_10node\_20sample\_4clusters}:} The result of the EM algorithm is illustrated in fig~\ref{fig:D10_N20_K4}.
 	\image{0.9}{D10_N20_K4}{The likelihood and log-likelihood at each iteration of the EM algorithm for data \textit{q\_2\_5\_tm\_10node\_20sample\_4clusters}.}
-	\par The comparison of the real and inferred trees with unweighted RF metric is show in tab~ \ref{tab:RF_D10_N20_K4}.
+	\par The comparison of the real and inferred trees with unweighted RF metric is show in tab~ \ref{tab:RF_D10_N20_K4}, from which we can see that the trees don't have similar structures which can caused by small number of samples.
 	\begin{table}[!ht]
 		\centering
 		\caption{RF distance between the true tree mixture and the result obtained from the EM algorithm for data \textit{q\_2\_5\_tm\_10node\_20sample\_4clusters}, where the rows represents the obtained tree mixture and the columns represents the true tree mixture.}
@@ -418,19 +420,96 @@ which is in the form of a Normal-Gamma distribution, thus the exact posterior is
 		\label{tab:RF_D10_N20_K4}
 	\end{table}
 	\par The log-likelihood of the result tree mixture obtained by the EM algorithm is $-119.724756$, while the log-likelihood of the ground truth is $-113.143100$.
-	\par Finally, by simulating $1000$ data points from the true tree mixture, the result is shown as 
+	\par Also, in the next question, $1000$ data points would be sampled from the tree mixture to see what would happen with the result of the EM algorithm.
 
-	\item \textbf{\textit{q\_2\_5\_tm\_20node\_50sample\_4clusters}:}
+	\item \textbf{\textit{q\_2\_5\_tm\_10node\_50sample\_4clusters}:} The result of the EM algorithm is illustrated in fig~\ref{fig:D10_N50_K4}.
+	\image{0.9}{D10_N50_K4}{The likelihood and log-likelihood at each iteration of the EM algorithm for data \textit{q\_2\_5\_tm\_10node\_50sample\_4clusters}.}
+	\par The comparison of the real and inferred trees with unweighted RF metric is show in tab~ \ref{tab:RF_D10_N50_K4}. Still the trees don't have similar structures but the distance looks more average than the one with only $20$ samples.
+	\begin{table}[!ht]
+		\centering
+		\caption{RF distance between the true tree mixture and the result obtained from the EM algorithm for data \textit{q\_2\_5\_tm\_10node\_50sample\_4clusters}, where the rows represents the obtained tree mixture and the columns represents the true tree mixture.}
+		\begin{tabular}{c|cccc}
+			 & 0 & 1 & 2 & 3 \\
+			 \hline
+			 0 & 10 & 9 & 11 & 9 \\
+			 1 & 11 & 8 & 10 & 10 \\
+			 2 & 7 & 10 & 10 & 8 \\
+			 3 & 10 & 9 & 9 & 11
+		\end{tabular}
+		\label{tab:RF_D10_N50_K4}
+	\end{table}
+	\par The log-likelihood of the result tree mixture obtained by the EM algorithm is $-416.226204$, while the log-likelihood of the ground truth is $-280.856624$.
 	
-	\item \textbf{\textit{q\_2\_5\_tm\_20node\_20sample\_4clusters}:}
-
+	\item \textbf{\textit{q\_2\_5\_tm\_20node\_20sample\_4clusters}:} The result of the EM algorithm is illustrated in fig~\ref{fig:D20_N20_K4}.
+	\image{0.9}{D20_N20_K4}{The likelihood and log-likelihood at each iteration of the EM algorithm for data \textit{q\_2\_5\_tm\_20node\_20sample\_4clusters}.}
+	\par The comparison of the real and inferred trees with unweighted RF metric is show in tab~ \ref{tab:RF_D20_N20_K4}, from which we can see that the trees don't have similar structures which can caused by small number of samples and the result is even worse than the one with $10$ nodes due to the number of nodes is bigger, thus making the inference much harder and making it more difficult to have similar structures.
+	\begin{table}[!ht]
+		\centering
+		\caption{RF distance between the true tree mixture and the result obtained from the EM algorithm for data \textit{q\_2\_5\_tm\_20node\_20sample\_4clusters}, where the rows represents the obtained tree mixture and the columns represents the true tree mixture.}
+		\begin{tabular}{c|cccc}
+			 & 0 & 1 & 2 & 3 \\
+			 \hline
+			 0 & 19 & 19 & 19 & 20 \\
+			 1 & 19 & 19 & 19 & 22 \\
+			 2 & 19 & 15 & 17 & 18 \\
+			 3 & 18 & 20 & 24 & 21
+		\end{tabular}
+		\label{tab:RF_D20_N20_K4}
+	\end{table}
+	\par The log-likelihood of the result tree mixture obtained by the EM algorithm is $-278.687237$, while the log-likelihood of the ground truth is $-217.005755$.
 \end{itemize}
 
 %%%%% Question 2.5.17
 \noindent\fcolorbox{black}{lightgray}{\begin{minipage}{\textwidth}
     \textbf{Question 2.5.17:} \textit{Simulate new tree mixtures with different number of nodes, samples and clusters. Try to find some interesting cases. Analyze your results as in the previous question.}
 \end{minipage}} \\
-\par 
+\par By simulating a tree mixture with only $3$ nodes and $10$ clusters and sample $1000$ data points from the tree mixture, the result is shown in fig~\ref{fig:D3_N1000_K10}.
+\image{0.9}{D3_N1000_K10}{The likelihood and log-likelihood at each iteration of the EM algorithm for tree mixture with $3$ nodes and $10$ clusters.}
+\par The comparison of the real and inferred trees with unweighted RF metric is show in tab~ \ref{tab:RF_D3_N1000_K10}, from which we can see that the trees have similar structures because the number of nodes is only three which can be easily inferred.
+	\begin{table}[!ht]
+		\centering
+		\caption{RF distance between the true tree mixture and the result obtained from the EM algorithm for tree mixture with $3$ nodes and $10$ clusters, where the rows represents the obtained tree mixture and the columns represents the true tree mixture.}
+		\begin{tabular}{c|cccccccccc}
+			  & 0 & 1 & 2 & 3 & 4 & 5 & 6 & 7 & 8 & 9 \\
+			\hline
+			0 & 2 & 2 & 0 & 0 & 2 & 0 & 2 & 2 & 0 & 2 \\
+			1 & 2 & 2 & 0 & 0 & 2 & 0 & 2 & 2 & 0 & 2 \\
+			2 & 2 & 2 & 0 & 0 & 2 & 0 & 2 & 2 & 0 & 2 \\
+			3 & 0 & 0 & 2 & 2 & 0 & 2 & 0 & 0 & 2 & 0 \\
+			4 & 2 & 2 & 0 & 0 & 2 & 0 & 2 & 2 & 0 & 2 \\
+			5 & 0 & 0 & 2 & 2 & 0 & 2 & 0 & 0 & 2 & 0 \\
+			6 & 2 & 2 & 0 & 0 & 2 & 0 & 2 & 2 & 0 & 2 \\
+			7 & 0 & 0 & 2 & 2 & 0 & 2 & 0 & 0 & 2 & 0 \\
+			8 & 0 & 0 & 2 & 2 & 0 & 2 & 0 & 0 & 2 & 0 \\
+			9 & 2 & 2 & 0 & 0 & 2 & 0 & 2 & 2 & 0 & 2
+		\end{tabular}
+		\label{tab:RF_D3_N1000_K10}
+	\end{table}
+\par The log-likelihood of the result tree mixture obtained by the EM algorithm is $-1997.297679$, while the log-likelihood of the ground truth is $-2003.252791$.
+
+\par Another example simulating a tree mixture with $10$ nodes and $10$ clusters, and sample $50$ data points from the tree mixture (notice that it is similar to \textit{q\_2\_5\_tm\_10node\_50sample\_4clusters} while the only difference is the number of clusters), the result of the EM algorithm is illustrated in fig~\ref{fig:D10_N50_K10}.
+	\image{0.9}{D10_N50_K10}{The likelihood and log-likelihood at each iteration of the EM algorithm for tree mixture with $10$ nodes and $10$ clusters.}
+	\par The comparison of the real and inferred trees with unweighted RF metric is show in tab~ \ref{tab:RF_D10_N50_K10}, from which we can see that the trees have more similar structures when compared to the case of \textit{q\_2\_5\_tm\_10node\_50sample\_4clusters}.
+	\begin{table}[!ht]
+		\centering
+		\caption{RF distance between the true tree mixture and the result obtained from the EM algorithm for tree mixture with $10$ nodes and $10$ clusters, where the rows represents the obtained tree mixture and the columns represents the true tree mixture.}
+		\begin{tabular}{c|cccccccccc}
+			 & 0 & 1 & 2 & 3 & 4 & 5 & 6 & 7 & 8 & 9 \\
+\hline
+0 & 9 & 10 & 8 & 7 & 7 & 9 & 5 & 11 & 9 & 6 \\
+1 & 10 & 9 & 7 & 12 & 10 & 6 & 8 & 10 & 8 & 9 \\
+2 & 11 & 8 & 8 & 11 & 9 & 7 & 7 & 11 & 9 & 8 \\
+3 & 10 & 9 & 7 & 10 & 8 & 10 & 6 & 12 & 8 & 7 \\
+4 & 9 & 8 & 8 & 9 & 9 & 7 & 9 & 9 & 9 & 8 \\
+5 & 10 & 9 & 9 & 10 & 12 & 10 & 10 & 10 & 10 & 11 \\
+6 & 9 & 10 & 8 & 7 & 9 & 9 & 7 & 11 & 9 & 8 \\
+7 & 10 & 7 & 7 & 8 & 8 & 8 & 8 & 10 & 8 & 7 \\
+8 & 9 & 8 & 10 & 9 & 11 & 11 & 9 & 9 & 11 & 10\\
+9 & 11 & 8 & 8 & 9 & 9 & 7 & 9 & 11 & 9 & 8
+		\end{tabular}
+		\label{tab:RF_D10_N50_K10}
+	\end{table}
+	\par The log-likelihood of the result tree mixture obtained by the EM algorithm is $-359.954244$, while the log-likelihood of the ground truth is $-323.847884$. Which are relatively similar when compare to the case of \textit{q\_2\_5\_tm\_10node\_50sample\_4clusters}.
 
 
 \section{Super epicentra - EM}
@@ -471,7 +550,14 @@ where
 	\mathcal{Q}(\bm{\theta}, \bm{\theta}^{\mathrm{old}}) =& \sum_{\mathbf{Z}} p(\mathbf{Z} \vert \mathbf{X}, \mathbf{S}, \bm{\theta}^{\mathrm{old}}) \ln p(\mathbf{X}, \mathbf{S}, \mathbf{Z} \vert \bm{\theta}) \\
 	=& \sum_{\mathbf{Z}} p(\mathbf{Z} \vert \mathbf{X}, \mathbf{S}, \bm{\theta}^{\mathrm{old}}) \ln p(\mathbf{Z} \vert \bm{\theta}) p(\mathbf{X}, \mathbf{S} \vert \mathbf{Z}, \bm{\theta})
 \end{align*}
-\par Setting the derivatives of  with respect to (only for the cases that $Z^{n} = 1$). ?????
+\par Setting the derivatives of $p(\Z \vert \X, \S, \bm{\theta}^{\mathrm{old}})\ln p(\X, \S, \Z \vert \bm{\theta})$ with respect to $\bm{\theta}$ to zero, we have the updated parameters given by
+\begin{align*}
+	\mu_{k}^{\mathrm{new}} =& \frac{1}{N_{k}} \sum_{n=1}^{N} \gamma(Z^{n}_{k}) X^{n} \\
+	\tau_{k,1}^{\mathrm{new}} =& \frac{N_{k}}{\sum_{n=1}^{N} \gamma(Z^{n}_{k}) (X^{n}_{1} - \mu_{k,1}^{\mathrm{new}})^{2}} \\
+	\tau_{k,2}^{\mathrm{new}} =& \frac{N_{k}}{\sum_{n=1}^{N} \gamma(Z^{n}_{k}) (X^{n}_{2} - \mu_{k,2}^{\mathrm{new}})^{2}} \\
+	\lambda_{k}^{\mathrm{new}} =& \frac{1}{N_{k}} \sum_{n=1}^{N} \gamma(Z^{n}_{k}) S^{n} \\
+	\pi_{k}^{\mathrm{new}} =& \frac{N_{k}}{N}.
+\end{align*}
 
 \par \textbf{EM algorithm:}
 \begin{enumerate}
@@ -547,6 +633,7 @@ where
 	\caption{Result of the EM algorithm for different data sets.}
 	\label{fig:2_6_Result}
 \end{figure}
+\par The ground truth of the data is illustrated in fig~\ref{fig:2_6_Truth} and the inference result from EM algorithm is illustrated in fig~\ref{fig:2_6_Result}. From those two figures, we can tell that the result of EM algorithm gives good inference of the means and covariances for each Gaussian model, and ratios for each Poisson model.
 
 
 \section{Super epicentra - VI}
@@ -555,7 +642,7 @@ where
 \noindent\fcolorbox{black}{lightgray}{\begin{minipage}{\textwidth}
     \textbf{Question 2.7.21:} \textit{Derive a VI algorithm that estimates the posterior distribution for this model.}
 \end{minipage}} \\
-\par The VI algorithm is derived based on \cite{Bishop}.
+\par The VI algorithm is derived based on \cite{Bishop} and lecture notes.
 \par Since $\pi \sim \mathrm{Dir}(\alpha)$, we have
 \begin{align*}
 	p(\pi \vert \alpha) =& p(\pi_{1}, \cdots, \pi_{K} \vert \alpha_{1}, \cdots, \alpha_{K}) \\
@@ -566,13 +653,7 @@ where
 \begin{align*}
 	p(\mu_{k} \vert \tau_{k}) =& \N(\mu_{k} \vert \mu, (C \tau_{k})^{-1}) \\
 	p(\tau_{k}) =& \Gam(\tau_{k} \vert \alpha', \beta') \\
-	p(\lambda_{k}) =& \Gam(\lambda_{k} \vert \alpha_{0}, \beta_{0}),
-\end{align*}
-and from the previous question, we know that
-\begin{align*}
-	p(X^{n}, S^{n} \vert Z^{n}_{k}=1, \mu_{k}, \tau_{k}, \lambda_{k}) =& \N(X^{n} \vert \mu_{k}, \tau_{k}) \mathrm{Poisson}(S^{n} \vert \lambda_{k}) \\ 
-	=& \frac{\sqrt{\tau_{k,1}\tau_{k,2}}}{2\pi} \exp\left[-\frac{\tau_{k,1}}{2}(X^{n}_{1} - \mu_{k,1})^{2} - \frac{\tau_{k,2}}{2}(X^{n}_{2} - \mu_{k,2})^{2}\right] \frac{\lambda_{k}^{S^{n}}}{S^{n}!} \exp\left[-\lambda_{k}\right] \\
-	=& \frac{\sqrt{\tau_{k,1}\tau_{k,2}}}{2\pi} \frac{\lambda_{k}^{S^{n}}}{S^{n}!} \exp\left[-\frac{\tau_{k,1}}{2}(X^{n}_{1} - \mu_{k,1})^{2} - \frac{\tau_{k,2}}{2}(X^{n}_{2} - \mu_{k,2})^{2} -\lambda_{k}\right].
+	p(\lambda_{k}) =& \Gam(\lambda_{k} \vert \alpha_{0}, \beta_{0}).
 \end{align*}
 \par The joint distribution of all of the random variables is given by
 \begin{align*}
@@ -586,13 +667,13 @@ and from the previous question, we know that
 \begin{align*}
 	\ln q^{*}(\Z) =& \mathbb{E}_{\pi, \mu, \tau, \lambda}[\ln p(\X, \S, \Z, \pi, \mu, \tau, \lambda)] + \const \\
 	=& \mathbb{E}_{\pi}[\ln p(\Z \vert \pi)] + \mathbb{E}_{\mu, \tau}[\ln p(\X \vert \Z, \mu, \tau)] + \mathbb{E}_{\lambda}[\ln p(\S \vert \Z, \lambda)] + \const \\
-	=& \sum_{n=1}^{N}\sum_{k=1}^{K} Z^{n}_{k} \ln \rho_{n,k} + \const
+	=& \sum_{n=1}^{N}\sum_{k=1}^{K} Z^{n}_{k} \ln \rho_{nk} + \const
 \end{align*}
-where we have defined
+where
 \begin{align*}
-	\ln \rho_{n,k} =& \mathbb{E}\left[\ln \pi_{k}\right] + \frac{1}{2}\E\left[\ln\vert\tau_{k}\vert\right] - \ln(2\pi) \\ & - \frac{1}{2} \E_{\mu_{k}, \tau_{k}}\left[ (X^{n} - \mu_{k})^{\mathrm{T}}\tau_{k}(X^{n} - \mu_{k}) \right] \\ & + S^{n} \mathbb{E}[\ln \lambda_{k}] - \mathbb{E}[\lambda_{k}] - \ln\left(S^{n}!\right).
+	\ln \rho_{nk} =& \mathbb{E}\left[\ln \pi_{k}\right] + \frac{1}{2}\E\left[\ln\vert\tau_{k}\vert\right] - \ln(2\pi) \\ & - \frac{1}{2} \E_{\mu_{k}, \tau_{k}}\left[ (X^{n} - \mu_{k})^{\mathrm{T}}\tau_{k}(X^{n} - \mu_{k}) \right] \\ & + S^{n} \mathbb{E}[\ln \lambda_{k}] - \mathbb{E}[\lambda_{k}] - \ln\left(S^{n}!\right).
 \end{align*}
-\par Taking the exponential of both sides of the log of the optimized factor and normalize it, we obtain
+\par Taking the exponential of both sides of the equation and normalize it, we obtain
 \begin{align*}
 	q^{*}(\Z) = \prod_{n=1}^{N}\prod_{k=1}^{K} r_{nk}^{Z^{n}_{k}}
 \end{align*}
@@ -600,24 +681,24 @@ where
 \begin{align*}
 	r_{nk} = \frac{\rho_{nk}}{\sum_{j=1}^{K}\rho_{nj}}.
 \end{align*}
-\par For the discrete distribution $q^{*}(\Z)$ we have the standard result
+\par For the discrete distribution $q^{*}(\Z)$ we have
 \begin{align*}
 	\mathbb{E}[Z^{n}_{k}] = r_{nk}
 \end{align*}
-from which we see that the quantities $r_{nk}$ are playing the role of responsibilities. Define 
+and define 
 \begin{align*}
 	N_{k} =& \sum_{n=1}^{N} r_{nk}.
 \end{align*}
-\par Now let us consider the factor $q(\pi, \mu, \tau, \lambda)$ in the variational posterior distribution, we have
+\par Then consider the factor $q(\pi, \mu, \tau, \lambda)$ in the variational posterior distribution, we have
 \begin{align*}
 	\ln q^{*}(\pi, \mu, \tau, \lambda) =& \ln p(\pi) + \mathbb{E}_{\Z}[\ln p(\Z \vert \pi)] + \const \\ & + \sum_{k=1}^{K}\ln p(\mu_{k}, \tau_{k}) + \sum_{k=1}^{K}\sum_{n=1}^{N} \mathbb{E}[Z^{n}_{k}]\ln \N(X^{n} \vert \mu_{k}, \tau_{k}^{-1}) \\ & + \sum_{k=1}^{K}\ln p(\lambda_{k}) + \sum_{k=1}^{K}\sum_{n=1}^{N}\mathbb{E}[Z^{n}_{k}]\ln\Poisson(S^{n} \vert \lambda_{k}).
 \end{align*}
-\par Since the right-hand side of this expression decomposes into a sum of terms involving only $\pi$ together with terms only involving $\mu$ and $\tau$ and terms only involving $\lambda$, which implies that the variational posterior $q(\pi, \mu, \tau, \lambda)$ factorizes to give $q(\pi)q(\mu, \tau)q(\lambda)$, and by summing over $k$ of terms involving $\mu_{k}$ and $\tau_{k}$, and $\lambda_{k}$ leads to the further factorization
+\par Since the right-hand side of this expression decomposes into a sum of terms involving only $\pi$, terms only involving $\mu$ and $\tau$, and terms only involving $\lambda$, which implies that the variational posterior $q(\pi, \mu, \tau, \lambda)$ factorizes to give $q(\pi)q(\mu, \tau)q(\lambda)$ which gives
 \begin{align*}
 	q(\pi, \mu, \tau, \lambda) = q(\pi) \prod_{k=1}^{K} q(\mu_{k}, \tau_{k}) q(\lambda_{k}).
 \end{align*}
 \begin{itemize}
-\item Identifying the terms that depend on $\pi$, we have
+\item First, by identifying the terms that depend on $\pi$, we have
 \begin{align*}
 	\ln q^{*}(\pi) = (\alpha - 1) \sum_{k=1}^{K}\ln \pi_{k} + \sum_{k=1}^{K}\sum_{n}^{N}r_{nk}\ln \pi_{k} + \const
 \end{align*}
@@ -660,31 +741,134 @@ So, we have
 \end{itemize}
 
 \section{Sampling from a tree GM}
-%%%%% Question 2.8.22
-\noindent\fcolorbox{black}{lightgray}{\begin{minipage}{\textwidth}
-    \textbf{Question 2.8.22:} \textit{Derive these algorithms.}
-\end{minipage}} \\
-
-%%%%% Question 2.8.23
-\noindent\fcolorbox{black}{lightgray}{\begin{minipage}{\textwidth}
-    \textbf{Question 2.8.23:} \textit{Implement your bottom up DP algorithm for the probability of generating an odd sum output.}
-\end{minipage}} \\
-
-%%%%% Question 2.8.24
-\noindent\fcolorbox{black}{lightgray}{\begin{minipage}{\textwidth}
-    \textbf{Question 2.8.24:} \textit{Implement your sampling algorithm.}
-\end{minipage}} \\
-
-%%%%% Question 2.8.25
-\noindent\fcolorbox{black}{lightgray}{\begin{minipage}{\textwidth}
-    \textbf{Question 2.8.25:} \textit{Apply your algorithm to the graphical model and data provided separately.}
-\end{minipage}} \\
+%%%%%% Question 2.8.22
+%\noindent\fcolorbox{black}{lightgray}{\begin{minipage}{\textwidth}
+%    \textbf{Question 2.8.22:} \textit{Derive these algorithms.}
+%\end{minipage}} \\
+%\begin{enumerate}
+%\item \textbf{Bottom-up Dynamic Programming (DP) algorithm:}
+%\par Since the observable variables $O$ is $\{X_{l}: l \in L(T)\}$, the probability $p(O \vert T, \Theta)$ is given by (for simplicity, $T$ and $\Theta$ are omitted in the equations)
+%\begin{align*}
+%	p(O) =& \sum_{T \setminus \{O\}} p(\mathcal{S}_{l}\{X_{r}\}, \mathcal{S}_{r}\{X_{r}\}, X_{r}) \\
+%	=& \sum_{T \setminus \{O\}} p(\mathcal{S}_{l}\{X_{r}\} \vert X_{r}) p(\mathcal{S}_{r}\{X_{r}\} \vert X_{r}) p(X_{r}) \\
+%	=& \sum_{X_{r}} p(X_{r}) \\ 
+%	 & \times \sum_{\mathcal{S}_{l}\{X_{r}\}\setminus\{O\}} p(\mathcal{S}_{l}\{\mathcal{L}(X_{r})\}, \mathcal{S}_{r}\{\mathcal{L}(X_{r})\}, \mathcal{L}(X_{r}) \mid X_{r}) \\
+%	 & \times \sum_{\mathcal{S}_{r}\{X_{r}\}\setminus\{O\}} p(\mathcal{S}_{l}\{\mathcal{R}(X_{r})\}, \mathcal{S}_{r}\{\mathcal{R}(X_{r})\}, \mathcal{R}(X_{r}) \mid X_{r})
+%\end{align*}
+%where $X_{r}$ means the root of $T$, $\mathcal{S}_{l}\{\mathcal{X}\}$ means the left subtree of node $\mathcal{X}$, $\mathcal{S}_{r}\{\mathcal{X}\}$ means the right subtree of node $\mathcal{X}$, $\mathcal{L}(\mathcal{X})$ means the left child of node $\mathcal{X}$, and $\mathcal{R}(\mathcal{X})$ means the right child of node $\mathcal{X}$.
+%\par The above equation states that for each node, we consider the node, the left subtree and the right subtree, which can be consider as the recursions pertinent for the algorithm.
+%\par Then, based on the likelihood, we can have $q(x)$ given by
+%\begin{align*}
+%	q(x) = \frac{p\left(O \vert T, \Theta, \sum_{l\in L(T)X_{l}}\mbox{ is odd}\right)}{\sum_{\sum_{l\in L(T)X_{l}}\mbox{ is odd}} p\left(O \vert T, \Theta, \sum_{l\in L(T)X_{l}}\mbox{ is odd}\right)}
+%\end{align*}
+%
+%\item \textbf{Top-down sampling algorithm:}
+%\end{enumerate}
+%
+%%%%%% Question 2.8.23
+%\noindent\fcolorbox{black}{lightgray}{\begin{minipage}{\textwidth}
+%    \textbf{Question 2.8.23:} \textit{Implement your bottom up DP algorithm for the probability of generating an odd sum output.}
+%\end{minipage}} \\
+%
+%%%%%% Question 2.8.24
+%\noindent\fcolorbox{black}{lightgray}{\begin{minipage}{\textwidth}
+%    \textbf{Question 2.8.24:} \textit{Implement your sampling algorithm.}
+%\end{minipage}} \\
+%
+%%%%%% Question 2.8.25
+%\noindent\fcolorbox{black}{lightgray}{\begin{minipage}{\textwidth}
+%    \textbf{Question 2.8.25:} \textit{Apply your algorithm to the graphical model and data provided separately.}
+%\end{minipage}} \\
 
 \section{Failing components VI}
 %%%%% Question 2.9.26
 \noindent\fcolorbox{black}{lightgray}{\begin{minipage}{\textwidth}
     \textbf{Question 2.9.26:} \textit{Derive a VI algorithm that estimates the posterior distribution for this model.}
 \end{minipage}} \\
+\par From the question, we have
+\begin{align*}
+	p(Z_{1}) =& \frac{1}{R} \\
+	p(Z_{c+1} \vert Z_{c}) =& 1 - \left(\frac{2}{3}\right)^{N_{Z_c}(Z_{c+1})}
+\end{align*}
+where $c \leq 1$, and
+\begin{align*}
+	N_{Z_c}(Z_{c+1}) = 	\begin{cases}
+						0, & \text{if $Z_{c+1} \not\in N(Z_{c})$} \\
+						1, & \text{if $Z_{c+1} \in N(Z_{c})$}
+					\end{cases}
+\end{align*}
+and define $N_{Z_{0}}(Z_{1}) = 0$. Also, we have
+%	p(X^{n}_{r,c} \vert Z_{c}=r, \Theta_{r,c}) =& \Bernoulli(X^{n}_{r,c} \vert \theta_{f}) \\
+%	=& 	\begin{cases}
+%			1 - \theta_{f}, & \text{if $X^{n}_{r,c} = 0$} \\
+%			\theta_{f}, & \text{if $X^{n}_{r,c} = 1$}
+%		\end{cases} \\
+%	p(X^{n}_{r,c} \vert Z_{c}\neq r, \Theta_{r,c}) =& \Bernoulli(X^{n}_{r,c} \vert \theta_{r,c}) \\
+%	=& 	\begin{cases}
+%			1 - \theta_{r,c}, & \text{if $X^{n}_{r,c} = 0$} \\
+%			\theta_{r,c}, & \text{if $X^{n}_{r,c} = 1$}
+%		\end{cases} \\
+\begin{align*}
+	p(X^{n}_{r,c} \vert Z_{c}, \Theta_{r,c}) =& \Bernoulli(X^{n}_{r,c} \vert \theta_{f})^{1 - I_{r}(Z_{c})} \Bernoulli(X^{n}_{r,c} \vert \theta_{r,c})^{I_{r}(Z_{c})} \\
+	=& \theta_{f}^{X^{n}_{r,c}(1-I_{r}(Z_{c}))}(1-\theta_{f})^{(1-X^{n}_{r,c})(1-I_{r}(Z_{c}))} \\ & \theta_{r,c}^{X^{n}_{r,c}I_{r}(Z_{c})}(1-\theta_{r,c})^{(1-X^{n}_{r,c})I_{r}(Z_{c})},
+\end{align*}
+where
+\begin{align*}
+	I_{r}(Z_{c}) = 	\begin{cases}
+						0, & \text{if $Z_{c} = r$} \\
+						1, & \text{if $Z_{c} \neq r$}
+					\end{cases}.
+\end{align*}
+\par And also
+\begin{align*}
+	p(\theta_{f})p(X_{r,c} \vert Z_{c}=r, \Theta_{r,c}) =& \Bernoulli(X_{r,c} \vert \theta_{f}) \Beta(\theta_{f} \vert a_{f}, b_{f}) \\
+	=& \Beta\left(\theta_{f} \vert a_{f} + \sum_{n=1}^{N} X^{n}_{r,c}, b_{f} + N - \sum_{n=1}^{N} X^{n}_{r,c}\right) \\
+	p(\theta_{r,c})p(X_{r,c} \vert Z_{c}\neq r, \Theta_{r,c}) =& \Bernoulli(X_{r,c} \vert \theta_{r,c}) \Beta(\theta_{r,c} \vert a, b) \\
+	=& \Beta\left(\theta_{r,c} \vert a + \sum_{n=1}^{N} X^{n}_{r,c}, b + N - \sum_{n=1}^{N} X^{n}_{r,c}\right).
+\end{align*}
+\par Also, since the model follows the same structure with Hidden Markov Model (HMM), then the joint distribution of all the random variables is given by
+\begin{align*}
+	p(X, Z, \Theta) =& p(Z_{1}) p(\Theta_{1}) P(X_{1} \vert Z_{1}, \Theta_{1}) \\
+	 & p(Z_{2} \vert Z_{1}) p(\Theta_{2}) p(X_{2} \vert Z_{2}, \Theta_{2}) \\
+	 & \cdots \\
+	 & p(Z_{C} \vert Z_{C-1}) p(\Theta_{C}) P(X_{C} \vert Z_{C}, \Theta_{C}) \\
+	=& p(Z_{1}) \prod_{r=1}^{R} p(\Theta_{r,1}) P(X_{r,1} \vert Z_{1}, \Theta_{r,1}) \\
+	 & p(Z_{2} \vert Z_{1}) \prod_{r=1}^{R} p(\Theta_{r,2}) p(X_{r,2} \vert Z_{2}, \Theta_{r,2}) \\
+	 & \cdots \\
+	 & p(Z_{C} \vert Z_{C-1}) \prod_{r=1}^{R} p(\Theta_{r,C}) P(X_{r,C} \vert Z_{C}, \Theta_{r,C}) \\
+	=& p(Z) \prod_{c=1}^{C} \prod_{r=1}^{R} p(\Theta_{r,c}) P(X_{r,c} \vert Z_{c}, \Theta_{r,c})
+\end{align*}
+\par A variational distribution is consider so that
+\begin{align*}
+	q(Z, \Theta) = q(Z) q(\Theta).
+\end{align*}
+\par The log of the optimized factor is given by
+\begin{align*}
+	\ln q^{*}(Z) 
+	=& \ln q^{*}(Z_{1}) + \ln q^{*}(Z_{2} \vert Z_{1}) + \cdots + \ln q^{*}(Z_{C} \vert Z_{C-1}) \\
+	=& \E[\ln p(Z_{1})] + \E[\ln p(Z_{2} \vert Z_{1})] + \cdots + \E[\ln p(Z_{C} \vert Z_{C-1})] + \E_{\Theta}[p(X \vert Z, \Theta)] + \const \\
+	=& \frac{1}{R} + \sum_{c=1}^{C-1}\ln\left(1-\left(\frac{2}{3}\right)^{N_{Z_c}(Z_{c+1})}\right) + \const \\
+	 & + \sum_{n=1}^{N}\sum_{c=1}^{C}\sum_{r=1}^{R} \left\{ X^{n}_{r,c}(1 - I_{r}(Z_{c}))\E[\ln \theta_{f}]  + (1-X^{n}_{r,c})(1-I_{r}(Z_{c})) \E[\ln (1-\theta_{k})] \right. \\
+	 & \left. + x^{n}_{r,c}I_{r}(Z_{c})\E[\ln\theta_{r,c}] + (1 - X^{n}_{r,c})I_{r}(Z_{c})\E[\ln(1-\theta_{r,c})]\right\} \\ 
+	=& \sum_{n=1}^{N}\sum_{c=1}^{C}\sum_{r=1}^{R}\frac{1}{NR}\ln\left(1-\left(\frac{2}{3}\right)^{N_{Z_c}(Z_{c+1})}\right) + \const \\
+	 & + \sum_{n=1}^{N}\sum_{c=1}^{C}\sum_{r=1}^{R} \left\{ X^{n}_{r,c}(1 - I_{r}(Z_{c}))\E[\ln \theta_{f}]  + (1-X^{n}_{r,c})(1-I_{r}(Z_{c})) \E[\ln (1-\theta_{k})] \right. \\
+	 & \left. + x^{n}_{r,c}I_{r}(Z_{c})\E[\ln\theta_{r,c}] + (1 - X^{n}_{r,c})I_{r}(Z_{c})\E[\ln(1-\theta_{r,c})]\right\} \\
+	=& \sum_{n=1}^{N}\sum_{r=1}^{R}\sum_{c=1}^{C} \ln\rho_{n,r,c} + \const.
+\end{align*}
+\par Then take the exponential of both side of the equation and normalize it, we obtain
+\begin{align*}
+	q^{*}(Z) = \prod_{n=1}^{N}\prod_{r=1}^{R}\prod_{c=1}^{C}r_{n,r,c}
+\end{align*}
+where
+\begin{align*}
+	r_{n,r,c} = \frac{\rho_{n,r,c}}{\sum_{r=1}^{R}\sum_{c=1}^{C}\rho_{n,r,c}}.
+\end{align*}
+
+\par Then for $q(\Theta)$, we have
+\begin{align*}
+	\ln q^{*}(\Theta) =& \sum_{r=1}^{R}\sum_{c=1}^{C}
+\end{align*}
+
 
 \newpage
 \bibliographystyle{ieeetr}

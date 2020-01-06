@@ -34,7 +34,7 @@ def load_tree():
     binary_tree.load_tree('tree_task_2_8')
 
     # Print tree
-    # binary_tree.print()
+    binary_tree.print()
 
     # Print topology
     binary_tree.print_topology()
@@ -93,8 +93,11 @@ def test_sample_proportion(dict, tree, n=1000):
             n_samples += 1
     return n_samples/n
 
-def tree_DP():
+def tree_DP(binary_tree):
     # TODO: Implement algorithm for dynamic programming
+    visit_list = [binary_tree.root]
+    while len(visit_list) is not 0:
+        pass
     pass
 
 def odd_sum_sampling():
