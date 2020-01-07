@@ -258,7 +258,7 @@ def main():
                         help='Specify the number of clusters (i.e 3)')
     parser.add_argument('--seed_val', type=int, default=123,
                         help='Specify the seed value for reproducibility (i.e 42)')
-    parser.add_argument('--if_sample', type=bool, default=True,
+    parser.add_argument('--if_simulate', type=bool, default=True,
                         help='Specify whether the sampling is enabled (i.e False)')
     parser.add_argument('--num_samples', type=int, default=50,
                         help='Specify the number of samples if sampling is enabled (i.e 1000)')
@@ -272,7 +272,7 @@ def main():
     args = parser.parse_args()
     print("\tArguments are: ", args)
 
-    if args.if_sample:
+    if args.if_simulate:
         print("\n1. Make new tree and sample.\n")
         tm_truth = TreeMixture(num_clusters=args.num_clusters, num_nodes=args.num_nodes)
         tm_truth.simulate_pi(seed_val=args.seed_val)
@@ -316,7 +316,6 @@ def main():
         N = len(samples)
         K = tm_truth.num_clusters
         tns = dendropy.TaxonNamespace()
-        print("  & 0 & 1 & 2 & 3 \\\\")
         print("\\hline")
         for k in range(K):
             print(k, end=" & ")
@@ -346,7 +345,7 @@ def main():
                         posterior[n,k] *= cur_node.cat[x[int(cur_node.ancestor.name)]][x[int(cur_node.name)]] 
             prior[n] *= np.sum(posterior[n] * tm_truth.pi)
         loglikelihood_truth = np.sum(np.log(prior))
-        print("\t%f : %f"%(loglikelihood[-1], loglikelihood_truth))
+        print("%f : %f"%(loglikelihood[-1], loglikelihood_truth))
 
 
 if __name__ == "__main__":

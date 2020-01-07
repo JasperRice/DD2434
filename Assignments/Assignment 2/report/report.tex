@@ -305,7 +305,7 @@ which is in the form of a Normal-Gamma distribution, thus the exact posterior is
     \textbf{Question 2.4.14:} \textit{Compare the inferred variational distribution with the exact posterior. Run the inference on data points drawn from iid Gaussians. Do this for three interesting cases and visualize the results. Describe the differences.}
 \end{minipage}} \\
 \begin{enumerate}
-	\item In this case, the number of data set is $N = 10$ and the initial values are $b_{N} = 5$ and $\lambda_{N} = 5$. The result is shown in fig~\ref{fig:2_4_1}, where the true posterior distribution is shown by the colorful contour lines, while the approximated distribution given by the VI algorithm is shown in blue contour lines and red contour lines when reached convergence.
+	\item In this case, the number of data set is $N = 10$ and the initial values are $b_{N} = 5$ and $\lambda_{N} = 5$. The result is shown in fig~\ref{fig:2_4_1}, where the true posterior distribution is shown by the colorful contour lines, while the approximated distribution given by the VI algorithm is shown in blue contour lines and red contour lines when reached convergence. The convergence criteria is that both of $b_{N}$ and $\lambda_{N}$ are converge to a given threshold.
 	\begin{figure}[!ht]
 		\centering
 		\begin{subfigure}{.4\textwidth}
@@ -327,7 +327,7 @@ which is in the form of a Normal-Gamma distribution, thus the exact posterior is
 		\caption{Simple VI with $\mu_{0} = \lambda_{0} = a_{0} = b_{0} = 0$, $b_{N} = 5$, and $\lambda_{N} = 5$ with $10$ samples.}
 		\label{fig:2_4_1}
 	\end{figure}
-	\par Although we are using zero for parameters in the prior distributions, so that $\mu_{0} = \lambda_{0} = a_{0} = b_{0} = 0$, which implies that we have no information about the distribution, the convergence is really quick with VI algorithm.
+	\par Although we are using zero for parameters in the prior distributions, so that $\mu_{0} = \lambda_{0} = a_{0} = b_{0} = 0$, which implies that we have no information about the distribution, the convergence is really quick with VI algorithm, which is $8$ steps in my case.
 	\par And not only from this case, but also from the following cases, we can see that the mean of the $\mu$ is always correct, which is true since we get value $\mu_{N}$ at the beginning and don't update it during the iterations.
 
 	\item In this case, the number of data set is $N = 10$ and the initial values are $b_{N} = 0.1$ and $\lambda_{N} = 0.1$. The result is illustrated in fig~\ref{fig:2_4_2}.
@@ -352,7 +352,7 @@ which is in the form of a Normal-Gamma distribution, thus the exact posterior is
 		\caption{Simple VI with $\mu_{0} = \lambda_{0} = a_{0} = b_{0} = 0$, $b_{N} = 0.1$, and $\lambda_{N} = 0.1$ with $10$ samples.}
 		\label{fig:2_4_2}
 	\end{figure}
-	\par By setting the value of the initial values $b_{N}$ and $\lambda_{N}$ to smaller values which are much different to the true values in the true posterior distribution, the converging procedure is slower and requires more iterations to reach the convergence.
+	\par By setting the value of the initial values $b_{N}$ and $\lambda_{N}$ to smaller values which are much different to the true values in the true posterior distribution, the converging procedure is slower and requires more iterations, in my case $12$ steps, to reach the convergence.
 	
 	\item In this case, the number of data set is $N = 100$ and the initial values are $b_{N} = 5$ and $\lambda_{N} = 5$. The result is illustrated in fig~\ref{fig:2_4_3}.
 	\begin{figure}[!ht]
@@ -376,7 +376,7 @@ which is in the form of a Normal-Gamma distribution, thus the exact posterior is
 		\caption{Simple VI with $\mu_{0} = \lambda_{0} = a_{0} = b_{0} = 0$, $b_{N} = 5$, and $\lambda_{N} = 5$ with $100$ samples.}
 		\label{fig:2_4_3}
 	\end{figure}
-	\par In this case, we use $100$ data sets generated from a normal distribution. The true posterior distribution for $\mu$ and $\tau$ looks more like a circular shape. And since we have more data sets, we would be confident to the result and the convergence is quick at the same time.
+	\par In this case, we use $100$ data sets generated from a normal distribution. The true posterior distribution for $\mu$ and $\tau$ looks more like a circular shape. And since we have more data sets, we would be confident to the result and the convergence is quick at the same time, which is $8$ steps.
 \end{enumerate}
 
 
@@ -633,7 +633,6 @@ where
 \par The ground truth of the data is illustrated in fig~\ref{fig:2_6_Truth} and the inference result from EM algorithm is illustrated in fig~\ref{fig:2_6_Result}. From those two figures, we can tell that the result of EM algorithm gives good inference of the means and covariances for each Gaussian model, and ratios for each Poisson model.
 
 
-\newpage
 \section{Super epicentra - VI}
 \image{0.5}{Q2_2_6}{The $K$ super epicentra model with priors.}
 %%%%% Question 2.7.21
