@@ -746,19 +746,12 @@ So, we have
 \end{minipage}} \\
 \begin{enumerate}
 \item \textbf{Bottom-up Dynamic Programming (DP) algorithm:}
-\par Since the observable variables $O$ is $\{X_{l}: l \in L(T)\}$, the probability $p(O \vert T, \Theta)$ is given by (for simplicity, $T$ and $\Theta$ are omitted in the equations)
+\par Define $\mathfrak{O}\{T\}$ such that the sum of the leaves of tree $T$ is odd. Similarly, define $\mathfrak{E}\{T\}$ such that the sum of the leaves of tree $T$ is even. Also, define $\mathcal{L}(T)$ to be the left subtree of the root of the tree $T$, and define $\mathcal{R}(T)$ to be the right subtree of the root of the tree $T$, which both can be empty tree. Then for an arbitrary tree, we have
 \begin{align*}
-	p(O) =& \sum_{T \setminus \{O\}} p(\mathcal{S}_{l}\{X_{r}\}, \mathcal{S}_{r}\{X_{r}\}, X_{r}) \\
-	=& \sum_{T \setminus \{O\}} p(\mathcal{S}_{l}\{X_{r}\} \vert X_{r}) p(\mathcal{S}_{r}\{X_{r}\} \vert X_{r}) p(X_{r}) \\
-	=& \sum_{X_{r}} p(X_{r}) \\ 
-	 & \times \sum_{\mathcal{S}_{l}\{X_{r}\}\setminus\{O\}} p(\mathcal{S}_{l}\{\mathcal{L}(X_{r})\}, \mathcal{S}_{r}\{\mathcal{L}(X_{r})\}, \mathcal{L}(X_{r}) \mid X_{r}) \\
-	 & \times \sum_{\mathcal{S}_{r}\{X_{r}\}\setminus\{O\}} p(\mathcal{S}_{l}\{\mathcal{R}(X_{r})\}, \mathcal{S}_{r}\{\mathcal{R}(X_{r})\}, \mathcal{R}(X_{r}) \mid X_{r})
-\end{align*}
-where $X_{r}$ means the root of $T$, $\mathcal{S}_{l}\{\mathcal{X}\}$ means the left subtree of node $\mathcal{X}$, $\mathcal{S}_{r}\{\mathcal{X}\}$ means the right subtree of node $\mathcal{X}$, $\mathcal{L}(\mathcal{X})$ means the left child of node $\mathcal{X}$, and $\mathcal{R}(\mathcal{X})$ means the right child of node $\mathcal{X}$.
-\par The above equation states that for each node, we consider the node, the left subtree and the right subtree, which can be consider as the recursions pertinent for calculating the likelihood distribution.
-\par We then define a mapping: $f : \{O: \sum_{l\in L(T)}X_{l}\} \rightarrow x$, which maps $x$ to all the sets of leaves that their sum are odd. Then, based on the likelihood and the mapping, we can have $q(x)$ given by
-\begin{align*}
-	q(x) = \frac{p\left(O \vert T, \Theta, \sum_{l\in L(T)X_{l}}\mbox{ is odd}\right)}{\sum_{\sum_{l\in L(T)X_{l}}\mbox{ is odd}} p\left(O \vert T, \Theta, \sum_{l\in L(T)X_{l}}\mbox{ is odd}\right)}
+	p(\mathfrak{O}\{T\} \vert T, \Theta) =& p(\mathfrak{O}\{\mathcal{L}(T)\} \vert \mathcal{L}(T), \Theta) p(\mathfrak{E}\{\mathcal{R}(T)\} \vert \mathcal{R}(T), \Theta) \\
+	+&  p(\mathfrak{E}\{\mathcal{L}(T)\} \vert \mathcal{L}(T), \Theta) p(\mathfrak{O}\{\mathcal{R}(T)\} \vert \mathcal{R}(T), \Theta) \\
+	p(\mathfrak{E}\{T\} \vert T, \Theta) =& p(\mathfrak{O}\{\mathcal{L}(T)\} \vert \mathcal{L}(T), \Theta) p(\mathfrak{O}\{\mathcal{R}(T)\} \vert \mathcal{R}(T), \Theta) \\
+	+&  p(\mathfrak{E}\{\mathcal{L}(T)\} \vert \mathcal{L}(T), \Theta) p(\mathfrak{E}\{\mathcal{R}(T)\} \vert \mathcal{R}(T), \Theta) \\
 \end{align*}
 
 \item \textbf{Top-down sampling algorithm:}
@@ -788,56 +781,51 @@ where $X_{r}$ means the root of $T$, $\mathcal{S}_{l}\{\mathcal{X}\}$ means the 
 \end{minipage}} \\
 \par From the question, we have
 \begin{align*}
-	p(Z_{1}) =& \frac{1}{R} \\
-	p(Z_{c+1} \vert Z_{c}) =& 1 - \left(\frac{2}{3}\right)^{N_{Z_c}(Z_{c+1})}
+	p(Z^{n}_{1}) =& \frac{1}{R} \\
+	p(Z^{n}_{c+1} \vert Z^{n}_{c}) =& 1 - \left(\frac{2}{3}\right)^{N_{Z^{n}_c}(Z^{n}_{c+1})}
 \end{align*}
 where $c \leq 1$, and
 \begin{align*}
-	N_{Z_c}(Z_{c+1}) = 	\begin{cases}
-						0, & \text{if $Z_{c+1} \not\in N(Z_{c})$} \\
-						1, & \text{if $Z_{c+1} \in N(Z_{c})$}
+	N_{Z^{n}_c}(Z^{n}_{c+1}) = 	\begin{cases}
+						0, & \text{if $Z^{n}_{c+1} \not\in N(Z^{n}_{c})$} \\
+						1, & \text{if $Z^{n}_{c+1} \in N(Z^{n}_{c})$}
 					\end{cases}
 \end{align*}
-and define $N_{Z_{0}}(Z_{1}) = 0$. Also, we have
-%	p(X^{n}_{r,c} \vert Z_{c}=r, \Theta_{r,c}) =& \Bernoulli(X^{n}_{r,c} \vert \theta_{f}) \\
-%	=& 	\begin{cases}
-%			1 - \theta_{f}, & \text{if $X^{n}_{r,c} = 0$} \\
-%			\theta_{f}, & \text{if $X^{n}_{r,c} = 1$}
-%		\end{cases} \\
-%	p(X^{n}_{r,c} \vert Z_{c}\neq r, \Theta_{r,c}) =& \Bernoulli(X^{n}_{r,c} \vert \theta_{r,c}) \\
-%	=& 	\begin{cases}
-%			1 - \theta_{r,c}, & \text{if $X^{n}_{r,c} = 0$} \\
-%			\theta_{r,c}, & \text{if $X^{n}_{r,c} = 1$}
-%		\end{cases} \\
+and define $N_{Z^{n}_{0}}(Z^{n}_{1}) = 0$. Also, we have
 \begin{align*}
-	p(X^{n}_{r,c} \vert Z_{c}, \Theta_{r,c}) =& \Bernoulli(X^{n}_{r,c} \vert \theta_{f})^{1 - I_{r}(Z_{c})} \Bernoulli(X^{n}_{r,c} \vert \theta_{r,c})^{I_{r}(Z_{c})} \\
-	=& \theta_{f}^{X^{n}_{r,c}(1-I_{r}(Z_{c}))}(1-\theta_{f})^{(1-X^{n}_{r,c})(1-I_{r}(Z_{c}))} \\ & \theta_{r,c}^{X^{n}_{r,c}I_{r}(Z_{c})}(1-\theta_{r,c})^{(1-X^{n}_{r,c})I_{r}(Z_{c})},
+	p(X^{n}_{r,c} \vert Z^{n}_{c}, \Theta_{r,c}) =& \Bernoulli(X^{n}_{r,c} \vert \theta_{f})^{1 - I_{r}(Z^{n}_{c})} \Bernoulli(X^{n}_{r,c} \vert \theta_{r,c})^{I_{r}(Z^{n}_{c})} \\
+	=& \theta_{f}^{X^{n}_{r,c}(1-I_{r}(Z^{n}_{c}))}(1-\theta_{f})^{(1-X^{n}_{r,c})(1-I_{r}(Z^{n}_{c}))} \\ & \theta_{r,c}^{X^{n}_{r,c}I_{r}(Z^{n}_{c})}(1-\theta_{r,c})^{(1-X^{n}_{r,c})I_{r}(Z^{n}_{c})},
 \end{align*}
 where
 \begin{align*}
-	I_{r}(Z_{c}) = 	\begin{cases}
-						0, & \text{if $Z_{c} = r$} \\
-						1, & \text{if $Z_{c} \neq r$}
-					\end{cases}.
+	I_{r}(Z^{n}_{c}) = 	\begin{cases}
+							0, & \text{if $Z^{n}_{c} = r$} \\
+							1, & \text{if $Z^{n}_{c} \neq r$}
+						\end{cases}.
 \end{align*}
 \par And also
 \begin{align*}
 	p(\theta_{f})p(X_{r,c} \vert Z_{c}=r, \Theta_{r,c}) =& \Bernoulli(X_{r,c} \vert \theta_{f}) \Beta(\theta_{f} \vert a_{f}, b_{f}) \\
-	=& \Beta\left(\theta_{f} \vert a_{f} + \sum_{n=1}^{N} X^{n}_{r,c}, b_{f} + N - \sum_{n=1}^{N} X^{n}_{r,c}\right) \\
+	=& \Beta\left(\theta_{f} \vert a_{f} + \sum_{n=1}^{N} X^{n}_{r,c}(1-I_{r}(Z^{n}_{c})), b_{f} + \sum_{n=1}^{N} (1-X^{n}_{c})(1-I_{r}(Z^{n}_{c}))\right) \\
 	p(\theta_{r,c})p(X_{r,c} \vert Z_{c}\neq r, \Theta_{r,c}) =& \Bernoulli(X_{r,c} \vert \theta_{r,c}) \Beta(\theta_{r,c} \vert a, b) \\
-	=& \Beta\left(\theta_{r,c} \vert a + \sum_{n=1}^{N} X^{n}_{r,c}, b + N - \sum_{n=1}^{N} X^{n}_{r,c}\right)
+	=& \Beta\left(\theta_{r,c} \vert a + \sum_{n=1}^{N} X^{n}_{r,c}I_{r}(Z^{n}_{c}), b + \sum_{n=1}^{N} (1 - X^{n}_{r,c})I_{r}(Z^{n}_{c})\right)
 \end{align*}
 from which we obtain
+%\begin{align*}
+%	p(\Theta_{r,c})p(X_{r,c} \vert Z_{c}, \Theta_{r,c}) =& \left[\Beta(\theta_{r,c} \vert a, b)\Beta(\theta_{f} \vert a_{f}', b_{f}')\right]^{1-I_{r}(Z_{c})} \\
+%	& \left[\Beta(\theta_{f} \vert a_{f}, b_{f}) \Beta(\theta_{r,c}\vert a', b')\right]^{I_{r}(Z_{c})}
+%\end{align*}
+% Might be this:
 \begin{align*}
-	p(\Theta_{r,c})p(X_{r,c} \vert Z_{c}, \Theta_{r,c}) =& \left[\Beta(\theta_{r,c} \vert a, b)\Beta(\theta_{f} \vert a_{f}', b_{f}')\right]^{1-I_{r}(Z_{c})} \\
-	& \left[\Beta(\theta_{f} \vert a_{f}, b_{f}) \Beta(\theta_{r,c}\vert a', b')\right]^{I_{r}(Z_{c})}
+	p(\Theta_{r,c})p(X_{r,c} \vert Z_{c}, \Theta_{r,c}) =& \Beta(\theta_{f} \vert a_{f}', b_{f}') \Beta(\theta_{r,c}\vert a', b')
 \end{align*}
+% %%%%%
 where 
 \begin{align*}
-	a_{f}' =& a_{f} + \sum_{n=1}^{N} X^{n}_{r,c} &
-	b_{f}' =& b_{f} + N - \sum_{n=1}^{N} X^{n}_{r,c} \\
-	a' =& a + \sum_{n=1}^{N} X^{n}_{r,c} &
-	b' =& b + N - \sum_{n=1}^{N} X^{n}_{r,c}
+	a_{f}' 	=& a_{f} + \sum_{n=1}^{N} X^{n}_{r,c}(1-I_{r}(Z^{n}_{c})) &
+	b_{f}' 	=& b_{f} + \sum_{n=1}^{N} (1-X^{n}_{c})(1-I_{r}(Z^{n}_{c})) \\
+	a' 		=& a + \sum_{n=1}^{N} X^{n}_{r,c}I_{r}(Z^{n}_{c}) &
+	b' 		=& b + \sum_{n=1}^{N} (1 - X^{n}_{r,c})I_{r}(Z^{n}_{c})
 \end{align*}
 \par Also, since the model follows the same structure with Hidden Markov Model (HMM), then the joint distribution of all the random variables is given by
 \begin{align*}
@@ -860,12 +848,12 @@ where
 	\ln q^{*}(Z) 
 	=& \ln q^{*}(Z_{1}) + \ln q^{*}(Z_{2} \vert Z_{1}) + \cdots + \ln q^{*}(Z_{C} \vert Z_{C-1}) \\
 	=& \E[\ln p(Z_{1})] + \E[\ln p(Z_{2} \vert Z_{1})] + \cdots + \E[\ln p(Z_{C} \vert Z_{C-1})] + \E_{\Theta}[p(X \vert Z, \Theta)] + \const \\
-	=& \frac{1}{R} + \sum_{c=1}^{C-1}\ln\left(1-\left(\frac{2}{3}\right)^{N_{Z_c}(Z_{c+1})}\right) + \const \\
-	 & + \sum_{n=1}^{N}\sum_{c=1}^{C}\sum_{r=1}^{R} \left\{ X^{n}_{r,c}(1 - I_{r}(Z_{c}))\E[\ln \theta_{f}]  + (1-X^{n}_{r,c})(1-I_{r}(Z_{c})) \E[\ln (1-\theta_{k})] \right. \\
-	 & \left. + x^{n}_{r,c}I_{r}(Z_{c})\E[\ln\theta_{r,c}] + (1 - X^{n}_{r,c})I_{r}(Z_{c})\E[\ln(1-\theta_{r,c})]\right\} \\ 
-	=& \sum_{n=1}^{N}\sum_{c=1}^{C}\sum_{r=1}^{R}\frac{1}{NR}\ln\left(1-\left(\frac{2}{3}\right)^{N_{Z_c}(Z_{c+1})}\right) + \const \\
-	 & + \sum_{n=1}^{N}\sum_{c=1}^{C}\sum_{r=1}^{R} \left\{ X^{n}_{r,c}(1 - I_{r}(Z_{c}))\E[\ln \theta_{f}]  + (1-X^{n}_{r,c})(1-I_{r}(Z_{c})) \E[\ln (1-\theta_{k})] \right. \\
-	 & \left. + x^{n}_{r,c}I_{r}(Z_{c})\E[\ln\theta_{r,c}] + (1 - X^{n}_{r,c})I_{r}(Z_{c})\E[\ln(1-\theta_{r,c})]\right\} \\
+	=& \frac{N}{R} + \sum_{n=1}^{N}\sum_{c=1}^{C-1}\ln\left(1-\left(\frac{2}{3}\right)^{N_{Z^{n}_c}(Z^{n}_{c+1})}\right) \\
+	 & + \sum_{n=1}^{N}\sum_{c=1}^{C}\sum_{r=1}^{R} \left\{ X^{n}_{r,c}(1 - I_{r}(Z^{n}_{c}))\E[\ln \theta_{f}]  + (1-X^{n}_{r,c})(1-I_{r}(Z^{n}_{c})) \E[\ln (1-\theta_{k})] \right. \\
+	 & \left. + x^{n}_{r,c}I_{r}(Z^{n}_{c})\E[\ln\theta_{r,c}] + (1 - X^{n}_{r,c})I_{r}(Z^{n}_{c})\E[\ln(1-\theta_{r,c})]\right\} \\ 
+	=& \sum_{n=1}^{N}\sum_{c=1}^{C}\sum_{r=1}^{R}\frac{1}{R}\ln\left(1-\left(\frac{2}{3}\right)^{N_{Z^{n}_c}(Z^{n}_{c+1})}\right) + \const \\
+	 & + \sum_{n=1}^{N}\sum_{c=1}^{C}\sum_{r=1}^{R} \left\{ X^{n}_{r,c}(1 - I_{r}(Z^{n}_{c}))\E[\ln \theta_{f}]  + (1-X^{n}_{r,c})(1-I_{r}(Z^{n}_{c})) \E[\ln (1-\theta_{k})] \right. \\
+	 & \left. + x^{n}_{r,c}I_{r}(Z^{n}_{c})\E[\ln\theta_{r,c}] + (1 - X^{n}_{r,c})I_{r}(Z^{n}_{c})\E[\ln(1-\theta_{r,c})]\right\} \\
 	=& \sum_{n=1}^{N}\sum_{r=1}^{R}\sum_{c=1}^{C} \ln\rho_{n,r,c} + \const
 \end{align*}
 where could have $\ln(0)$ problem, which can be solved in practice by calculating $\ln(\textit{sys.float\_info.epsilon})$ instead. Then take the exponential of both side of the equation and normalize it, we obtain
@@ -878,10 +866,15 @@ where
 \end{align*}
 
 \par Then for $q(\Theta)$, we have
+%\begin{align*}
+%	\ln q^{*}(\Theta_{r,c}) =& \E[1-I_{r}(Z_{c})] \ln\left[\Beta(\theta_{r,c} \vert a, b)\Beta(\theta_{f} \vert a_{f}', b_{f}')\right] \\ 
+%	& + \E[I_{r}(Z_{c})] \ln\left[\Beta(\theta_{f} \vert a_{f}, b_{f}) \Beta(\theta_{r,c}\vert a', b')\right].
+%\end{align*}
+% Might be this
 \begin{align*}
-	\ln q^{*}(\Theta_{r,c}) =& \E[1-I_{r}(Z_{c})] \ln\left[\Beta(\theta_{r,c} \vert a, b)\Beta(\theta_{f} \vert a_{f}', b_{f}')\right] \\ 
-	& + \E[I_{r}(Z_{c})] \ln\left[\Beta(\theta_{f} \vert a_{f}, b_{f}) \Beta(\theta_{r,c}\vert a', b')\right].
+	\ln q^{*}(\Theta_{r,c}) =& \ln\left[\Beta(\theta_{f} \vert a_{f}', b_{f}')\right] + \ln\left[\Beta(\theta_{r,c}\vert a', b')\right].
 \end{align*}
+% %%%%%
 \par So, we have 
 \begin{align*}
 	q^{*}(\Theta_{r,c}) =& q^{*}(\theta_{f})q^{*}(\theta_{r,c}) \\
@@ -889,10 +882,10 @@ where
 \end{align*}
 where
 \begin{align*}
-	a_{f}^{*} =& \E[I_{r}(Z_{c})](a_{f}-1) + \E[1-I_{r}(Z_{c})](a_{f}'-1) + 1 \\
-	b_{f}^{*} =& \E[I_{r}(Z_{c})](b_{f}-1) + \E[1-I_{r}(Z_{c})](b_{f}'-1) + 1 \\
-	a_{r,c}^{*} =& \E[I_{r}(Z_{c})](a' - 1) + \E[1 - I_{r}(Z_{c})](a-1) + 1 \\
-	b_{r,c}^{*} =& \E[I_{r}(Z_{c})](b' - 1) + \E[1 - I_{r}(Z_{c})](b-1) + 1
+	a_{f}^{*} = a_{f}' 	=& a_{f} + \sum_{n=1}^{N} X^{n}_{r,c}(1-I_{r}(Z^{n}_{c})) &
+	b_{f}^{*} = b_{f}' 	=& b_{f} + \sum_{n=1}^{N} (1-X^{n}_{c})(1-I_{r}(Z^{n}_{c})) \\
+	a^{*} = a' 		=& a + \sum_{n=1}^{N} X^{n}_{r,c}I_{r}(Z^{n}_{c}) &
+	b^{*} = b' 		=& b + \sum_{n=1}^{N} (1 - X^{n}_{r,c})I_{r}(Z^{n}_{c})
 \end{align*}
 
 
