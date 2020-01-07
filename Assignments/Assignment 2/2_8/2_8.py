@@ -4,7 +4,7 @@ See README for more instructions and information on generating/loading trees.
 """
 
 import numpy as np
-from Tree import Tree
+from Tree import Tree, Node
 
 def test_binary_trees(seed_val=0, k=2, num_nodes=5):
     """
@@ -93,12 +93,54 @@ def test_sample_proportion(dict, tree, n=1000):
             n_samples += 1
     return n_samples/n
 
-def tree_DP(binary_tree):
+def tree_DP(root, leaves, k):
     # TODO: Implement algorithm for dynamic programming
-    visit_list = [binary_tree.root]
-    while len(visit_list) is not 0:
-        pass
-    pass
+    likelihood = np.dot(root.cat, odd_DP(root, leaves, k))
+    return likelihood
+
+def odd_DP(node, leaves, k):
+    if np.isnan(leaves[int(node.name)]):
+        theta1 = np.array((node.descendants[0].cat))
+        theta2 = np.array((node.descendants[1].cat))
+
+        s11 = odd_DP(node.descendants[0], leaves, k)
+        s21 = even_DP(node.descendants[1], leaves, k)
+        s1  = np.dot(theta1, s11) * np.dot(theta2, s21)
+        
+        s12 = even_DP(node.descendants[0], leaves, k)
+        s22 = odd_DP(node.descendants[1], leaves, k)
+        s2  = np.dot(theta1, s12) * np.dot(theta2, s22)
+        return s1 + s2
+
+    s = np.zeros((k,1))
+    if is_odd(leaves[int(node.name)]):
+        s[int(leaves[int(node.name)])] = 1
+    return s
+
+def even_DP(node, leaves, k):
+    if np.isnan(leaves[int(node.name)]):
+        theta1 = np.array((node.descendants[0].cat))
+        theta2 = np.array((node.descendants[1].cat))
+
+        s11 = odd_DP(node.descendants[0], leaves, k) 
+        s21 = odd_DP(node.descendants[1], leaves, k)
+        s1  = np.dot(theta1, s11) * np.dot(theta2, s21)
+        
+        s12 = even_DP(node.descendants[0], leaves, k)
+        s22 = even_DP(node.descendants[1], leaves, k)
+        s2  = np.dot(theta1, s12) * np.dot(theta2, s22)
+        return s1 + s2
+
+    s = np.zeros((k,1))
+    if is_even(leaves[int(node.name)]):
+        s[int(leaves[int(node.name)])] = 1
+    return s
+
+def is_even(x):
+    return x % 2 is 0
+
+def is_odd(x):
+    return x % 2 is 1
 
 def odd_sum_sampling():
     # TODO: Implement sampling algorithm
@@ -106,7 +148,20 @@ def odd_sum_sampling():
 
 def main():
     # Test tree
-    binary_tree = test_binary_trees(seed_val=0, k=2, num_nodes=5)
+    k = 2
+    num_nodes = 8
+    binary_tree = test_binary_trees(seed_val=0, k=2, num_nodes=num_nodes)
+    leaves = np.full(num_nodes+1, np.nan)
+    leaves[3] = 1
+    leaves[4] = 1
+    leaves[6] = 1
+    leaves[7] = 1
+    leaves[8] = 0
+    print(leaves)
+    print(binary_tree.root.cat)
+    print(binary_tree.root.descendants[0].cat)
+    print(tree_DP(binary_tree.root, leaves, k))
+
 
     # Load tree
     # binary_tree = load_tree()

@@ -753,6 +753,21 @@ So, we have
 	p(\mathfrak{E}\{T\} \vert T, \Theta) =& p(\mathfrak{O}\{\mathcal{L}(T)\} \vert \mathcal{L}(T), \Theta) p(\mathfrak{O}\{\mathcal{R}(T)\} \vert \mathcal{R}(T), \Theta) \\
 	+&  p(\mathfrak{E}\{\mathcal{L}(T)\} \vert \mathcal{L}(T), \Theta) p(\mathfrak{E}\{\mathcal{R}(T)\} \vert \mathcal{R}(T), \Theta) \\
 \end{align*}
+\par So, the recursions pertinent for getting an odd-sum output is to calculate both of: 
+\begin{enumerate}[i]
+\item the odd-sum output of left subtree and the even-sum output of right subtree;
+\item the even-sum output of left subtree and the odd-sum output of right subtree.
+\end{enumerate}
+\par And the recursions pertinent for getting an even-sum output is to calculate both of:
+\begin{enumerate}[i]
+\item the odd-sum output of left subtree and the odd-sum output of right subtree;
+\item the even-sum output of left subtree and the even-sum output of right subtree.
+\end{enumerate}
+\par And for a single step, the marginal probability is calculated, such that
+\begin{align*}
+	p(\mathfrak{O}\{T\} \vert T, \Theta) = \sum_{k=1}^{K} p(\mathfrak{O}\{T\}, X_{r(T)}=k \vert T, \Theta)
+\end{align*}
+where $X_{r(T)}$ means the root of the tree $T$.
 
 \item \textbf{Top-down sampling algorithm:}
 \end{enumerate}
@@ -848,7 +863,7 @@ where
 	\ln q^{*}(Z) 
 	=& \ln q^{*}(Z_{1}) + \ln q^{*}(Z_{2} \vert Z_{1}) + \cdots + \ln q^{*}(Z_{C} \vert Z_{C-1}) \\
 	=& \E[\ln p(Z_{1})] + \E[\ln p(Z_{2} \vert Z_{1})] + \cdots + \E[\ln p(Z_{C} \vert Z_{C-1})] + \E_{\Theta}[p(X \vert Z, \Theta)] + \const \\
-	=& \frac{N}{R} + \sum_{n=1}^{N}\sum_{c=1}^{C-1}\ln\left(1-\left(\frac{2}{3}\right)^{N_{Z^{n}_c}(Z^{n}_{c+1})}\right) \\
+	=& \frac{N}{R} + \sum_{n=1}^{N}\sum_{c=1}^{C-1}\ln\left(1-\left(\frac{2}{3}\right)^{N_{Z^{n}_c}(Z^{n}_{c+1})}\right) + \const \\
 	 & + \sum_{n=1}^{N}\sum_{c=1}^{C}\sum_{r=1}^{R} \left\{ X^{n}_{r,c}(1 - I_{r}(Z^{n}_{c}))\E[\ln \theta_{f}]  + (1-X^{n}_{r,c})(1-I_{r}(Z^{n}_{c})) \E[\ln (1-\theta_{k})] \right. \\
 	 & \left. + x^{n}_{r,c}I_{r}(Z^{n}_{c})\E[\ln\theta_{r,c}] + (1 - X^{n}_{r,c})I_{r}(Z^{n}_{c})\E[\ln(1-\theta_{r,c})]\right\} \\ 
 	=& \sum_{n=1}^{N}\sum_{c=1}^{C}\sum_{r=1}^{R}\frac{1}{R}\ln\left(1-\left(\frac{2}{3}\right)^{N_{Z^{n}_c}(Z^{n}_{c+1})}\right) + \const \\
