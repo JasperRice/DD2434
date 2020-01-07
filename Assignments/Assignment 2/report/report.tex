@@ -767,9 +767,13 @@ So, we have
 \begin{align*}
 	p(\mathfrak{O}\{T\} \vert T, \Theta) = \sum_{k=1}^{K} p(\mathfrak{O}\{T\}, X_{r(T)}=k \vert T, \Theta)
 \end{align*}
-where $X_{r(T)}$ means the root of the tree $T$. 
+where $X_{r(T)}$ means the root of the tree $T$.
 
-\item \textbf{Top-down sampling algorithm:} 
+\item \textbf{Top-down sampling algorithm:} To sample the leaves that with odd sum, we use Bayesian theorem so that (for simplicity, $T$ and $\Theta$ are omitted)
+\begin{align*}
+	p(X_{r(T)} \vert \mathfrak{O}\{T\}) = \frac{p(\mathfrak{O}\{T\} \vert X_{r(T)}) p(X_{r(T)})}{p(\mathfrak{O}\{T\})}.
+\end{align*}
+\par Then, if we look at the left child of 
 \end{enumerate}
 
 %%%%% Question 2.8.23

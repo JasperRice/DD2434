@@ -93,74 +93,60 @@ def test_sample_proportion(dict, tree, n=1000):
             n_samples += 1
     return n_samples/n
 
-def tree_DP(root, leaves, k):
+def tree_DP(root, k):
     # TODO: Implement algorithm for dynamic programming
-    likelihood = np.dot(root.cat, odd_DP(root, leaves, k))
-    return likelihood
+    p = np.dot(root.cat, odd_DP(root, k))
+    q = np.dot(root.cat, even_DP(root, k))
+    print(p+q)
+    return p
 
-def odd_DP(node, leaves, k):
-    if np.isnan(leaves[int(node.name)]):
+def odd_DP(node, k):
+    if len(node.descendants) != 0:
         theta1 = np.array((node.descendants[0].cat))
         theta2 = np.array((node.descendants[1].cat))
 
-        s11 = odd_DP(node.descendants[0], leaves, k)
-        s21 = even_DP(node.descendants[1], leaves, k)
+        s11 = odd_DP(node.descendants[0], k)
+        s21 = even_DP(node.descendants[1], k)
         s1  = np.dot(theta1, s11) * np.dot(theta2, s21)
         
-        s12 = even_DP(node.descendants[0], leaves, k)
-        s22 = odd_DP(node.descendants[1], leaves, k)
+        s12 = even_DP(node.descendants[0], k)
+        s22 = odd_DP(node.descendants[1], k)
         s2  = np.dot(theta1, s12) * np.dot(theta2, s22)
         return s1 + s2
 
     s = np.zeros((k,1))
-    if is_odd(leaves[int(node.name)]):
-        s[int(leaves[int(node.name)])] = 1
+    s[1::2] = 1
     return s
 
-def even_DP(node, leaves, k):
-    if np.isnan(leaves[int(node.name)]):
+def even_DP(node, k):
+    if len(node.descendants) != 0:
         theta1 = np.array((node.descendants[0].cat))
         theta2 = np.array((node.descendants[1].cat))
 
-        s11 = odd_DP(node.descendants[0], leaves, k) 
-        s21 = odd_DP(node.descendants[1], leaves, k)
+        s11 = odd_DP(node.descendants[0], k) 
+        s21 = odd_DP(node.descendants[1], k)
         s1  = np.dot(theta1, s11) * np.dot(theta2, s21)
         
-        s12 = even_DP(node.descendants[0], leaves, k)
-        s22 = even_DP(node.descendants[1], leaves, k)
+        s12 = even_DP(node.descendants[0], k)
+        s22 = even_DP(node.descendants[1], k)
         s2  = np.dot(theta1, s12) * np.dot(theta2, s22)
         return s1 + s2
 
     s = np.zeros((k,1))
-    if is_even(leaves[int(node.name)]):
-        s[int(leaves[int(node.name)])] = 1
+    s[0::2] = 1
     return s
 
-def is_even(x):
-    return int(x) % 2 is 0
-
-def is_odd(x):
-    return int(x) % 2 is 1
-
-def odd_sum_sampling():
+def odd_sum_sampling(root, K):
     # TODO: Implement sampling algorithm
-    pass
+        
 
 def main():
     # Test tree
-    k = 2
-    num_nodes = 8
-    binary_tree = test_binary_trees(seed_val=0, k=2, num_nodes=num_nodes)
-    leaves = np.full(num_nodes+1, np.nan)
-    leaves[3] = 1
-    leaves[4] = 1
-    leaves[6] = 1
-    leaves[7] = 1
-    leaves[8] = 1
-    print(leaves)
-    print(binary_tree.root.cat)
-    print(binary_tree.root.descendants[0].cat)
-    print(tree_DP(binary_tree.root, leaves, k))
+    k = 5
+    num_nodes = 100
+    binary_tree = test_binary_trees(seed_val=0, k=k, num_nodes=num_nodes)
+    p = tree_DP(binary_tree.root, k)
+    print(p)
 
 
     # Load tree
