@@ -156,7 +156,7 @@
 \noindent\fcolorbox{black}{lightgray}{\begin{minipage}{\textwidth}
     \textbf{Question 2.1.2:} \textit{List all your collaborations concerning the problem formulations in this assignment.}
 \end{minipage}} \\
-\par 
+\par Hongsheng Chang. \\
 
 \noindent\fcolorbox{black}{lightgray}{\begin{minipage}{\textwidth}
     \textbf{Question 2.1.3:} \textit{Have you discussed solutions with anybody?}
@@ -170,44 +170,38 @@
 \noindent\fcolorbox{black}{lightgray}{\begin{minipage}{\textwidth}
     \textbf{Question 2.2.4:} \textit{In the graphical model of Figure \ref{fig:Q2_2}, is $\mu_{k} \perp \tau_{k}$ (not conditioned by anything)?}
 \end{minipage}} \\
-\par Yes, $\mu_{k} \perp \tau_{k}$ is true.
-\begin{align*}
-    p(\mu_{k}, \tau_{k}) =& p(\mu_{k})p(\tau_{k})p\left(X^{1}, \cdots, X^{N} \mid \mu_{k}, \tau_{k}\right).
-\end{align*}
-\par Since none of the variables are observed, after ``marginalizing both sides of'' the above equation over $X^{1}, \cdots, X^{N}$ we obtain \cite{Bishop}:
-\begin{align*}
-    p(\mu_{k}, \tau_{k}) =& p(\mu_{k})p(\tau_{k}).
-\end{align*}
-\par So, $\mu_{k} \perp \tau_{k}$. \\
+\par Yes. \\
+%\par Yes, $\mu_{k} \perp \tau_{k}$ is true.
+%\begin{align*}
+%    p(\mu_{k}, \tau_{k}) =& p(\mu_{k})p(\tau_{k})p\left(X^{1}, \cdots, X^{N} \mid \mu_{k}, \tau_{k}\right).
+%\end{align*}
+%\par Since none of the variables are observed, after ``marginalizing both sides of'' the above equation over $X^{1}, \cdots, X^{N}$ we obtain \cite{Bishop}:
+%\begin{align*}
+%    p(\mu_{k}, \tau_{k}) =& p(\mu_{k})p(\tau_{k}).
+%\end{align*}
+%\par So, $\mu_{k} \perp \tau_{k}$. \\
 
 %%%%% Question 2.2.5
 \noindent\fcolorbox{black}{lightgray}{\begin{minipage}{\textwidth}
     \textbf{Question 2.2.5:} \textit{In the graphical model of Figure \ref{fig:Q2_2}, is $\mu_{k} \perp \tau_{k} \mid X^{1}, \cdots, X^{N}$?}
 \end{minipage}} \\
-\par No, $\mu_{k} \perp \tau_{k} \mid X^{1}, \cdots, X^{N}$ is false.
-\begin{align*}
-    p(\mu_{k}, \tau_{k} \mid X^{1}, \cdots, X^{N}) =& \frac{p\left(\mu_{k}, \tau_{k}, X^{1}, \cdots, X^{N} \right)}{p\left(X^{1}, \cdots , X^{N} \right)} \\
-    =& \frac{p(\mu_{k})p(\tau_{k})p\left(X^{1},\cdots,X^{N} \mid \mu_{k}, \tau_{k}\right)}{p\left(X^{1}, \cdots, X^{N}\right)},
-\end{align*}
-which isn't factorized into the product $p(\mu_{k})p(\tau_{k})$, thus $\mu_{k} \perp \tau_{k} \mid X^{1}, \cdots, X^{N}$ is false. \\
+\par No. \\
+%\par No, $\mu_{k} \perp \tau_{k} \mid X^{1}, \cdots, X^{N}$ is false.
+%\begin{align*}
+%    p(\mu_{k}, \tau_{k} \mid X^{1}, \cdots, X^{N}) =& \frac{p\left(\mu_{k}, \tau_{k}, X^{1}, \cdots, X^{N} \right)}{p\left(X^{1}, \cdots , X^{N} \right)} \\
+%    =& \frac{p(\mu_{k})p(\tau_{k})p\left(X^{1},\cdots,X^{N} \mid \mu_{k}, \tau_{k}\right)}{p\left(X^{1}, \cdots, X^{N}\right)},
+%\end{align*}
+%which isn't factorized into the product $p(\mu_{k})p(\tau_{k})$, thus $\mu_{k} \perp \tau_{k} \mid X^{1}, \cdots, X^{N}$ is false. \\
 
 %%%%% Question 2.2.6
 \noindent\fcolorbox{black}{lightgray}{\begin{minipage}{\textwidth}
-    \textbf{Question 2.2.6:} \textit{In the graphical model of Figure \ref{fig:Q2_2_6}, is $\mu \perp b^{'}$ (not conditioned by anything)?}
+    \textbf{Question 2.2.6:} \textit{In the graphical model of Figure \ref{fig:Q2_2_6}, is $\mu \perp \beta^{'}$ (not conditioned by anything)?}
 \end{minipage}} \\
-\par No, $\mu \perp b^{'}$ is false.
-\begin{align*}
-    p(\mu, b^{'}, \tau) = p(b^{'}) p(\tau \mid b^{'}) p(\mu \mid \tau).
-\end{align*}
-\par By marginalizing over $\tau$, we can obtain
-\begin{align*}
-    p(\mu, b^{'}) = p(b^{'}) \sum_{\tau} p(\tau \mid b^{'}) p(\mu \mid b^{'}) = p(\mu \mid b^{'}) p(b^{'}),
-\end{align*}
-which isn't factorized into the product $p(\mu)p(b^{'})$, thus $\mu \perp b^{'}$ is false. \\
+\par Yes. \\
 
 %%%%% Question 2.2.7
 \noindent\fcolorbox{black}{lightgray}{\begin{minipage}{\textwidth}
-    \textbf{Question 2.2.7:} \textit{In the graphical model of Figure \ref{fig:Q2_2_6}, is $\mu \perp b^{'} \mid X^{1}, \cdots, X^{N}$?}
+    \textbf{Question 2.2.7:} \textit{In the graphical model of Figure \ref{fig:Q2_2_6}, is $\mu \perp \beta^{'} \mid X^{1}, \cdots, X^{N}$?}
 \end{minipage}} \\
 \par No. \\
 
@@ -227,6 +221,7 @@ which isn't factorized into the product $p(\mu)p(b^{'})$, thus $\mu \perp b^{'}$
 \section{Likelihood of a tree GM only for E level}
 
 
+\newpage
 \section{Simple VI}
 %%%%% Question 2.4.12
 \noindent\fcolorbox{black}{lightgray}{\begin{minipage}{\textwidth}
@@ -327,9 +322,9 @@ which is in the form of a Normal-Gamma distribution, thus the exact posterior is
 		\end{subfigure}
 		\begin{subfigure}{.4\textwidth}
 			\centering
-			\includegraphics[width=\linewidth]{2_4_1_6}
+			\includegraphics[width=\linewidth]{2_4_1_8}
 		\end{subfigure}
-		\caption{Simple VI with $\mu_{0} = \lambda_{0} = a_{0} = b_{0} = 0$, $b_{N} = 5$, and $\lambda_{N} = 5$.}
+		\caption{Simple VI with $\mu_{0} = \lambda_{0} = a_{0} = b_{0} = 0$, $b_{N} = 5$, and $\lambda_{N} = 5$ with $10$ samples.}
 		\label{fig:2_4_1}
 	\end{figure}
 	\par Although we are using zero for parameters in the prior distributions, so that $\mu_{0} = \lambda_{0} = a_{0} = b_{0} = 0$, which implies that we have no information about the distribution, the convergence is really quick with VI algorithm.
@@ -352,9 +347,9 @@ which is in the form of a Normal-Gamma distribution, thus the exact posterior is
 		\end{subfigure}
 		\begin{subfigure}{.4\textwidth}
 			\centering
-			\includegraphics[width=\linewidth]{2_4_2_6}
+			\includegraphics[width=\linewidth]{2_4_2_12}
 		\end{subfigure}
-		\caption{Simple VI with $\mu_{0} = \lambda_{0} = a_{0} = b_{0} = 0$, $b_{N} = 0.1$, and $\lambda_{N} = 0.1$.}
+		\caption{Simple VI with $\mu_{0} = \lambda_{0} = a_{0} = b_{0} = 0$, $b_{N} = 0.1$, and $\lambda_{N} = 0.1$ with $10$ samples.}
 		\label{fig:2_4_2}
 	\end{figure}
 	\par By setting the value of the initial values $b_{N}$ and $\lambda_{N}$ to smaller values which are much different to the true values in the true posterior distribution, the converging procedure is slower and requires more iterations to reach the convergence.
@@ -376,15 +371,16 @@ which is in the form of a Normal-Gamma distribution, thus the exact posterior is
 		\end{subfigure}
 		\begin{subfigure}{.4\textwidth}
 			\centering
-			\includegraphics[width=\linewidth]{2_4_3_6}
+			\includegraphics[width=\linewidth]{2_4_3_8}
 		\end{subfigure}
-		\caption{Simple VI with $\mu_{0} = \lambda_{0} = a_{0} = b_{0} = 0$, $b_{N} = 5$, and $\lambda_{N} = 5$.}
+		\caption{Simple VI with $\mu_{0} = \lambda_{0} = a_{0} = b_{0} = 0$, $b_{N} = 5$, and $\lambda_{N} = 5$ with $100$ samples.}
 		\label{fig:2_4_3}
 	\end{figure}
 	\par In this case, we use $100$ data sets generated from a normal distribution. The true posterior distribution for $\mu$ and $\tau$ looks more like a circular shape. And since we have more data sets, we would be confident to the result and the convergence is quick at the same time.
 \end{enumerate}
 
 
+\newpage
 \section{Mixture of trees with observable variables}
 %%%%% Question 2.5.15
 \noindent\fcolorbox{black}{lightgray}{\begin{minipage}{\textwidth}
@@ -512,6 +508,7 @@ which is in the form of a Normal-Gamma distribution, thus the exact posterior is
 	\par The log-likelihood of the result tree mixture obtained by the EM algorithm is $-359.954244$, while the log-likelihood of the ground truth is $-323.847884$. Which are relatively similar when compare to the case of \textit{q\_2\_5\_tm\_10node\_50sample\_4clusters}.
 
 
+\newpage
 \section{Super epicentra - EM}
 \image{0.5}{Q2_2}{Mixture of components modeling location and strengths of earthquakes associated with a super-epicentra. In the figure, $\mu_{k} = (\mu_{k,1}, \mu_{k,2})$ and $\tau_{k} = (\tau_{k,1}, \tau_{k,2})$.}
 %%%%% Question 2.6.18
@@ -636,6 +633,7 @@ where
 \par The ground truth of the data is illustrated in fig~\ref{fig:2_6_Truth} and the inference result from EM algorithm is illustrated in fig~\ref{fig:2_6_Result}. From those two figures, we can tell that the result of EM algorithm gives good inference of the means and covariances for each Gaussian model, and ratios for each Poisson model.
 
 
+\newpage
 \section{Super epicentra - VI}
 \image{0.5}{Q2_2_6}{The $K$ super epicentra model with priors.}
 %%%%% Question 2.7.21
@@ -740,46 +738,50 @@ So, we have
 \end{align*}
 \end{itemize}
 
-\section{Sampling from a tree GM}
-%%%%%% Question 2.8.22
-%\noindent\fcolorbox{black}{lightgray}{\begin{minipage}{\textwidth}
-%    \textbf{Question 2.8.22:} \textit{Derive these algorithms.}
-%\end{minipage}} \\
-%\begin{enumerate}
-%\item \textbf{Bottom-up Dynamic Programming (DP) algorithm:}
-%\par Since the observable variables $O$ is $\{X_{l}: l \in L(T)\}$, the probability $p(O \vert T, \Theta)$ is given by (for simplicity, $T$ and $\Theta$ are omitted in the equations)
-%\begin{align*}
-%	p(O) =& \sum_{T \setminus \{O\}} p(\mathcal{S}_{l}\{X_{r}\}, \mathcal{S}_{r}\{X_{r}\}, X_{r}) \\
-%	=& \sum_{T \setminus \{O\}} p(\mathcal{S}_{l}\{X_{r}\} \vert X_{r}) p(\mathcal{S}_{r}\{X_{r}\} \vert X_{r}) p(X_{r}) \\
-%	=& \sum_{X_{r}} p(X_{r}) \\ 
-%	 & \times \sum_{\mathcal{S}_{l}\{X_{r}\}\setminus\{O\}} p(\mathcal{S}_{l}\{\mathcal{L}(X_{r})\}, \mathcal{S}_{r}\{\mathcal{L}(X_{r})\}, \mathcal{L}(X_{r}) \mid X_{r}) \\
-%	 & \times \sum_{\mathcal{S}_{r}\{X_{r}\}\setminus\{O\}} p(\mathcal{S}_{l}\{\mathcal{R}(X_{r})\}, \mathcal{S}_{r}\{\mathcal{R}(X_{r})\}, \mathcal{R}(X_{r}) \mid X_{r})
-%\end{align*}
-%where $X_{r}$ means the root of $T$, $\mathcal{S}_{l}\{\mathcal{X}\}$ means the left subtree of node $\mathcal{X}$, $\mathcal{S}_{r}\{\mathcal{X}\}$ means the right subtree of node $\mathcal{X}$, $\mathcal{L}(\mathcal{X})$ means the left child of node $\mathcal{X}$, and $\mathcal{R}(\mathcal{X})$ means the right child of node $\mathcal{X}$.
-%\par The above equation states that for each node, we consider the node, the left subtree and the right subtree, which can be consider as the recursions pertinent for the algorithm.
-%\par Then, based on the likelihood, we can have $q(x)$ given by
-%\begin{align*}
-%	q(x) = \frac{p\left(O \vert T, \Theta, \sum_{l\in L(T)X_{l}}\mbox{ is odd}\right)}{\sum_{\sum_{l\in L(T)X_{l}}\mbox{ is odd}} p\left(O \vert T, \Theta, \sum_{l\in L(T)X_{l}}\mbox{ is odd}\right)}
-%\end{align*}
-%
-%\item \textbf{Top-down sampling algorithm:}
-%\end{enumerate}
-%
-%%%%%% Question 2.8.23
-%\noindent\fcolorbox{black}{lightgray}{\begin{minipage}{\textwidth}
-%    \textbf{Question 2.8.23:} \textit{Implement your bottom up DP algorithm for the probability of generating an odd sum output.}
-%\end{minipage}} \\
-%
-%%%%%% Question 2.8.24
-%\noindent\fcolorbox{black}{lightgray}{\begin{minipage}{\textwidth}
-%    \textbf{Question 2.8.24:} \textit{Implement your sampling algorithm.}
-%\end{minipage}} \\
-%
-%%%%%% Question 2.8.25
-%\noindent\fcolorbox{black}{lightgray}{\begin{minipage}{\textwidth}
-%    \textbf{Question 2.8.25:} \textit{Apply your algorithm to the graphical model and data provided separately.}
-%\end{minipage}} \\
 
+\newpage
+\section{Sampling from a tree GM}
+%%%%% Question 2.8.22
+\noindent\fcolorbox{black}{lightgray}{\begin{minipage}{\textwidth}
+    \textbf{Question 2.8.22:} \textit{Derive these algorithms.}
+\end{minipage}} \\
+\begin{enumerate}
+\item \textbf{Bottom-up Dynamic Programming (DP) algorithm:}
+\par Since the observable variables $O$ is $\{X_{l}: l \in L(T)\}$, the probability $p(O \vert T, \Theta)$ is given by (for simplicity, $T$ and $\Theta$ are omitted in the equations)
+\begin{align*}
+	p(O) =& \sum_{T \setminus \{O\}} p(\mathcal{S}_{l}\{X_{r}\}, \mathcal{S}_{r}\{X_{r}\}, X_{r}) \\
+	=& \sum_{T \setminus \{O\}} p(\mathcal{S}_{l}\{X_{r}\} \vert X_{r}) p(\mathcal{S}_{r}\{X_{r}\} \vert X_{r}) p(X_{r}) \\
+	=& \sum_{X_{r}} p(X_{r}) \\ 
+	 & \times \sum_{\mathcal{S}_{l}\{X_{r}\}\setminus\{O\}} p(\mathcal{S}_{l}\{\mathcal{L}(X_{r})\}, \mathcal{S}_{r}\{\mathcal{L}(X_{r})\}, \mathcal{L}(X_{r}) \mid X_{r}) \\
+	 & \times \sum_{\mathcal{S}_{r}\{X_{r}\}\setminus\{O\}} p(\mathcal{S}_{l}\{\mathcal{R}(X_{r})\}, \mathcal{S}_{r}\{\mathcal{R}(X_{r})\}, \mathcal{R}(X_{r}) \mid X_{r})
+\end{align*}
+where $X_{r}$ means the root of $T$, $\mathcal{S}_{l}\{\mathcal{X}\}$ means the left subtree of node $\mathcal{X}$, $\mathcal{S}_{r}\{\mathcal{X}\}$ means the right subtree of node $\mathcal{X}$, $\mathcal{L}(\mathcal{X})$ means the left child of node $\mathcal{X}$, and $\mathcal{R}(\mathcal{X})$ means the right child of node $\mathcal{X}$.
+\par The above equation states that for each node, we consider the node, the left subtree and the right subtree, which can be consider as the recursions pertinent for calculating the likelihood distribution.
+\par We then define a mapping: $f : \{O: \sum_{l\in L(T)}X_{l}\} \rightarrow x$, which maps $x$ to all the sets of leaves that their sum are odd. Then, based on the likelihood and the mapping, we can have $q(x)$ given by
+\begin{align*}
+	q(x) = \frac{p\left(O \vert T, \Theta, \sum_{l\in L(T)X_{l}}\mbox{ is odd}\right)}{\sum_{\sum_{l\in L(T)X_{l}}\mbox{ is odd}} p\left(O \vert T, \Theta, \sum_{l\in L(T)X_{l}}\mbox{ is odd}\right)}
+\end{align*}
+
+\item \textbf{Top-down sampling algorithm:}
+\end{enumerate}
+
+%%%%% Question 2.8.23
+\noindent\fcolorbox{black}{lightgray}{\begin{minipage}{\textwidth}
+    \textbf{Question 2.8.23:} \textit{Implement your bottom up DP algorithm for the probability of generating an odd sum output.}
+\end{minipage}} \\
+
+%%%%% Question 2.8.24
+\noindent\fcolorbox{black}{lightgray}{\begin{minipage}{\textwidth}
+    \textbf{Question 2.8.24:} \textit{Implement your sampling algorithm.}
+\end{minipage}} \\
+
+%%%%% Question 2.8.25
+\noindent\fcolorbox{black}{lightgray}{\begin{minipage}{\textwidth}
+    \textbf{Question 2.8.25:} \textit{Apply your algorithm to the graphical model and data provided separately.}
+\end{minipage}} \\
+
+
+\newpage
 \section{Failing components VI}
 %%%%% Question 2.9.26
 \noindent\fcolorbox{black}{lightgray}{\begin{minipage}{\textwidth}
@@ -850,7 +852,7 @@ where
 	 & p(Z_{C} \vert Z_{C-1}) \prod_{r=1}^{R} p(\Theta_{r,C}) P(X_{r,C} \vert Z_{C}, \Theta_{r,C}) \\
 	=& p(Z) \prod_{c=1}^{C} \prod_{r=1}^{R} p(\Theta_{r,c}) P(X_{r,c} \vert Z_{c}, \Theta_{r,c})
 \end{align*}
-\par A variational distribution is consider so that
+\par A variational distribution is considered so that
 \begin{align*}
 	q(Z, \Theta) = q(Z) q(\Theta).
 \end{align*}
