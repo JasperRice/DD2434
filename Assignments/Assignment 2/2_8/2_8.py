@@ -137,10 +137,10 @@ def even_DP(node, leaves, k):
     return s
 
 def is_even(x):
-    return x % 2 is 0
+    return int(x) % 2 is 0
 
 def is_odd(x):
-    return x % 2 is 1
+    return int(x) % 2 is 1
 
 def odd_sum_sampling():
     # TODO: Implement sampling algorithm
@@ -156,7 +156,7 @@ def main():
     leaves[4] = 1
     leaves[6] = 1
     leaves[7] = 1
-    leaves[8] = 0
+    leaves[8] = 1
     print(leaves)
     print(binary_tree.root.cat)
     print(binary_tree.root.descendants[0].cat)
