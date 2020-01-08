@@ -138,7 +138,9 @@ def even_DP(node, k):
 
 def odd_sum_sampling(root, K):
     # TODO: Implement sampling algorithm
-        
+    
+
+    sample = np.zeros(K)
 
 def main():
     # Test tree
