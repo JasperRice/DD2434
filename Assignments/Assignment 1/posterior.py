@@ -5,9 +5,7 @@ import scipy.optimize as opt
 
 from math import sin, cos, pi
 from numpy import trace as tr
-from numpy.linalg import det
-from numpy.linalg import inv
-from numpy.linalg import pinv
+from numpy.linalg import det, inv, pinv
 
 np.random.seed(2222)
 
